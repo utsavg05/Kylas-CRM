@@ -1,78 +1,150 @@
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
 
+// import axios from 'axios';
+
+// function App() {
+//   const [token, setToken] = useState('');
+//   const [status, setStatus] = useState(0);
+  
+
+//   useEffect(() => {
+//   const urlParams = new URLSearchParams(window.location.search);
+//   const code = urlParams.get('code');
+
+//   if (status === 0) {
+//     alert('Please wait while we exchange your code for an access token...');
+//     return;
+//   }
+
+//   if (code) {
+//     // Step 1: Exchange code for access token
+//     axios.post('http://localhost:3001/api/exchange-code', { code })
+//       .then(res => {
+//         console.log('✅ Access Token:', res.data.token);
+//         localStorage.setItem('hubspot_token', res.data.token);
+//         alert('✅ Token received');
+
+//         // Step 2: Now call the portal ID endpoint
+//         axios.get('http://localhost:3001/api/get-portal-id')
+//           .then(res2 => {
+//             const portalId = res2.data.portalId;
+//             console.log('🏢 Portal ID:', portalId);
+//             alert(`Portal ID: ${portalId}`);
+
+         
+//             window.location.href = `https://app.hubspot.com/connected-apps/${portalId}/installed`;
+//           })
+//           .catch(err => {
+//             console.error('❌ Error fetching portal ID:', err);
+//             alert('Error getting portal ID');
+//           });
+//       })
+//       .catch(err => {
+//         console.error('❌ Token exchange failed:', err);
+//         alert('Error exchanging code');
+//       });
+//   }
+// }, [status]);
+
+//   // ✅ Submit your IVR token to /api/verify-token
+//   const handleSubmit = async () => {
+//     try {
+//       const response = await axios.post(
+//         'http://localhost:3001/api/verify-token',
+//         { token }
+//       );
+//       if(response.status === 200) {
+//         alert('IVR token verified!');
+//         setStatus(response.status);
+//       } 
+//       else {
+//         alert('Invalid token or request failed.');
+//       }
+
+      
+//       localStorage.setItem('ivr_token', token);
+//       setToken('');
+//     } catch (error) {
+//       console.error('Error verifying IVR token:', error);
+//       alert('Invalid token or request failed.');
+//     }
+//   };
+
+//   return (
+//     <>
+//       <h1>Welcome to IVR Solution</h1>
+
+//       <input
+//         type="text"
+//         placeholder="Enter IVR token"
+//         value={token}
+//         onChange={(e) => setToken(e.target.value)}
+//       />
+//       <button onClick={handleSubmit}>Verify IVR Token</button>
+//     </>
+//   );
+// }
+
+// export default App;
+
+
+
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function App() {
   const [token, setToken] = useState('');
   const [status, setStatus] = useState(0);
-  
 
   useEffect(() => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const code = urlParams.get('code');
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
 
-  if (status === 0) {
-    alert('Please wait while we exchange your code for an access token...');
-    return;
-  }
+    if (!code) return;
 
-  if (code) {
-    // Step 1: Exchange code for access token
-    axios.post('http://localhost:3001/api/exchange-code', { code })
-      .then(res => {
-        console.log('✅ Access Token:', res.data.token);
-        localStorage.setItem('hubspot_token', res.data.token);
-        alert('✅ Token received');
+    alert('🔁 Exchanging your code for access token...');
 
-        // Step 2: Now call the portal ID endpoint
-        axios.get('http://localhost:3001/api/get-portal-id')
-          .then(res2 => {
-            const portalId = res2.data.portalId;
-            console.log('🏢 Portal ID:', portalId);
-            alert(`Portal ID: ${portalId}`);
-
-         
-            window.location.href = `https://app.hubspot.com/connected-apps/${portalId}/installed`;
-          })
-          .catch(err => {
-            console.error('❌ Error fetching portal ID:', err);
-            alert('Error getting portal ID');
-          });
+    // Step 1: Exchange Kylas code via your backend callback
+    axios.get(`http://localhost:3001/oauth/callback?code=${code}`)
+      .then((res) => {
+        alert(res.data.message || '✅ Kylas OAuth successful');
+        console.log("🔐 Access Token:", res.data.token); // Optional
       })
-      .catch(err => {
-        console.error('❌ Token exchange failed:', err);
-        alert('Error exchanging code');
+      .catch((err) => {
+        console.error('❌ Kylas token exchange failed:', err);
+        alert('❌ Token exchange failed');
       });
-  }
-}, [status]);
+  }, []);
 
-  // ✅ Submit your IVR token to /api/verify-token
+  useEffect(() => {
+  console.log("✅ App loaded inside iframe");
+}, []);
+
+  // 🔒 Step 2: Submit IVR token to backend
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
         'http://localhost:3001/api/verify-token',
         { token }
       );
-      if(response.status === 200) {
-        alert('IVR token verified!');
-        setStatus(response.status);
-      } 
-      else {
-        alert('Invalid token or request failed.');
-      }
 
-      
-      localStorage.setItem('ivr_token', token);
-      setToken('');
+      if (response.status === 200) {
+        alert('✅ IVR token verified!');
+        localStorage.setItem('ivr_token', token);
+        setStatus(response.status);
+        setToken('');
+      } else {
+        alert('❌ Invalid token');
+      }
     } catch (error) {
-      console.error('Error verifying IVR token:', error);
-      alert('Invalid token or request failed.');
+      console.error('❌ Error verifying IVR token:', error);
+      alert('❌ Verification failed');
     }
   };
 
   return (
     <>
-      <h1>Welcome to IVR Solution</h1>
+      <h1>Welcome to IVR CRM for Kylas</h1>
 
       <input
         type="text"

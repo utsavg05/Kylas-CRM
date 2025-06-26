@@ -109,7 +109,7 @@ function App() {
 
     alert('🔁 Exchanging authorization code...');
 
-    axios.get(`http://localhost:3001/oauth/callback?code=${code}`)
+    axios.get(`https://kylas-crm.onrender.com/oauth/callback?code=${code}`)
       .then((res) => {
         alert(res.data.message || '✅ OAuth success!');
         console.log('🔐 Access Token:', res.data.token);
@@ -126,7 +126,7 @@ function App() {
     setError('');
 
     try {
-      const res = await axios.post('http://localhost:3001/api/verify-token', { token });
+      const res = await axios.post('https://kylas-crm.onrender.com/api/verify-token', { token });
 
       if (res.status === 200) {
         localStorage.setItem('ivr_token', token);

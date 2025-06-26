@@ -145,21 +145,15 @@
 
 
 
-// const express = require('express');
 import express from 'express';
-// const cors = require('cors');
 import cors from 'cors';
-// const axios = require('axios');
 import axios from 'axios';
-// const dotenv = require('dotenv');
 import dotenv from 'dotenv'
-// const qs = require('qs');
 import qs from 'qs';
 import path from 'path';
 
-dotenv.config(); // Load .env variables
+dotenv.config();
 
-// const { fileURLToPath } = require('url');
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);

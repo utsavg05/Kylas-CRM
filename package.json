@@ -1,0 +1,7 @@
+{
+  "name": "kylas-fullstack",
+  "scripts": {
+    "build": "cd kylas-frontend && npm install && npm run build",
+    "start": "cd kylas-backend && npm install && node server.js"
+  }
+}

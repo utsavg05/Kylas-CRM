@@ -153,6 +153,12 @@ const qs = require('qs');
 
 dotenv.config(); // Load .env variables
 
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 const app = express();
 const PORT = 3001;
 
@@ -257,6 +263,12 @@ app.get('/api/leads', async (req, res) => {
     console.error('❌ Error fetching leads:', error.response?.data || error.message);
     res.status(500).json({ error: 'Failed to fetch leads' });
   }
+});
+
+
+app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));
+app.get("/{*any}", (req, res) => {
+  res.sendFile(path.join(__dirname, '../kylas-frontend/dist/index.html'));
 });
 
 // ✅ Start server

@@ -167,6 +167,15 @@ app.get('/oauth/callback', async (req, res) => {
   const code = req.query.code;
   if (!code) return res.status(400).send('Missing code from query params.');
 
+  const redirectUri = process.env.REDIRECT_URI;
+  const clientId = process.env.CLIENT_ID;
+  const clientSecret = process.env.CLIENT_SECRET;
+
+  console.log("🔁 Received OAuth Code:", code);
+  console.log("🔑 Client ID:", clientId);
+  console.log("🌐 Redirect URI:", redirectUri);
+
+
   const basicAuth = Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64');
 
   try {
@@ -176,6 +185,8 @@ app.get('/oauth/callback', async (req, res) => {
         grant_type: 'authorization_code',
         code,
         redirect_uri: process.env.REDIRECT_URI,
+        client_id: clientId,
+        client_secret: clientSecret,
       }),
       {
         headers: {

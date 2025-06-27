@@ -8,26 +8,40 @@ function App() {
 
   // 🔄 On mount: Exchange Kylas OAuth code
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
 
-    if (!code) {
-      console.log('🔍 No OAuth code found in URL.');
-      return;
+    const exchangeCode = async () => {
+      console.log('🔄 Checking for OAuth code in URL...');
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+
+      if (!code) {
+        console.log('🔍 No OAuth code found in URL.');
+        return;
+      }
+
+      alert('🔁 Exchanging authorization code...');
+
+      axios.get(`https://kylas-crm.onrender.com/oauth/callback?code=${code}`)
+        .then((res) => {
+          alert(res.data.message || '✅ OAuth success!');
+          console.log(res);
+          console.log('🔐 Access Token:', res.data.token);
+          localStorage.setItem('kylas_access_token', res.data.token);
+          setStatus('success');
+
+          if (res.data.account_id) {
+            localStorage.setItem('account_id', res.data.account_id);
+          }
+
+        })
+        .catch((err) => {
+          console.error('❌ OAuth exchange failed:', err);
+          alert('❌ OAuth exchange failed. See console for details.');
+        });
     }
 
-    alert('🔁 Exchanging authorization code...');
+    exchangeCode();
 
-    axios.get(`https://kylas-crm.onrender.com/oauth/callback?code=${code}`)
-      .then((res) => {
-        alert(res.data.message || '✅ OAuth success!');
-        console.log(res);
-        console.log('🔐 Access Token:', res.data.token);
-      })
-      .catch((err) => {
-        console.error('❌ OAuth exchange failed:', err);
-        alert('❌ OAuth exchange failed. See console for details.');
-      });
   }, []);
 
   // ✅ Handle IVR token submit

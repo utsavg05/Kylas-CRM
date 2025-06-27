@@ -112,6 +112,7 @@ function App() {
     axios.get(`https://kylas-crm.onrender.com/oauth/callback?code=${code}`)
       .then((res) => {
         alert(res.data.message || '✅ OAuth success!');
+        console.log(res);
         console.log('🔐 Access Token:', res.data.token);
       })
       .catch((err) => {

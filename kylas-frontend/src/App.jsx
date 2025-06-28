@@ -222,6 +222,10 @@ function App() {
         setStatus('success');
         alert('✅ IVR token verified successfully!');
         setToken('');
+
+        // 🔁 Redirect to Kylas app
+        window.location.href = 'https://app.kylas.io/sales/home';
+
       } else {
         setStatus('error');
         setError('Verification failed. Try again.');

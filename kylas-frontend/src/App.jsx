@@ -197,7 +197,7 @@ function App() {
 
     alert('🔁 Exchanging authorization code...');
 
-    axios.get(`https://kylas-crm.onrender.com/oauth/callback?code=${code}`)
+    axios.post(`https://kylas-crm.onrender.com/oauth/callback?code=${code}`)
       .then((res) => {
         alert(res.data.message || '✅ OAuth success!');
         console.log(res);

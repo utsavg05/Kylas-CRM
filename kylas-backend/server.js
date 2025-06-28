@@ -189,11 +189,16 @@ app.use((req, res, next) => {
 // });
 
 // ✅ 2. OAuth Callback from Kylas
-app.get('/oauth/callback', async (req, res) => {
+app.post('/oauth/callback', async (req, res) => {
   const code = req.query.code;
+  console.log(code);
+  console.log(typeof code);
+  
+  
   if (!code) return res.status(400).send('Missing code from query params.');
 
   const basicAuth = Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64');
+
 
   try {
     const tokenRes = await axios.post(
@@ -218,15 +223,15 @@ app.get('/oauth/callback', async (req, res) => {
     console.log('🔁 Kylas Refresh Token:', refresh_token);
 
     // Optional: fetch user info
-    const userInfo = await axios.get('https://api.kylas.io/v1/users/self', {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    });
+    // const userInfo = await axios.get('https://api.kylas.io/v1/users/self', {
+    //   headers: {
+    //     Authorization: `Bearer ${access_token}`,
+    //   },
+    // });
 
-    console.log('👤 User Info:', userInfo.data.user);
+    // console.log('👤 User Info:', userInfo.data.user);
 
-    res.json({ message: `OAuth successful for ${userInfo.data.user.name}`, token: access_token });
+    res.status(200).json({ token: access_token });
   } catch (error) {
     console.error('❌ OAuth error:', error.response?.data || error.message);
     res.status(500).json({ error: 'OAuth callback failed' });

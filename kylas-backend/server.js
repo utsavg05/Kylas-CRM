@@ -6,6 +6,7 @@ import qs from 'qs';
 import path from 'path';
 
 import kylasRoutes from './routes/kylas.js';
+import contactRoutes from './routes/contact.js';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/kylas', kylasRoutes);
+app.use('/api/contact', contactRoutes);
 
 app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'ALLOWALL'); // 🟢 allow iframe embedding
@@ -38,8 +40,8 @@ app.post('/oauth/callback', async (req, res) => {
   const code = req.query.code;
   console.log(code);
   console.log(typeof code);
-  
-  
+
+
   if (!code) return res.status(400).send('Missing code from query params.');
 
   const basicAuth = Buffer.from(`${process.env.CLIENT_ID}:${process.env.CLIENT_SECRET}`).toString('base64');

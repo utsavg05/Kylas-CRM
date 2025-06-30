@@ -7,6 +7,7 @@ import path from 'path';
 
 import kylasRoutes from './routes/kylas.js';
 import contactRoutes from './routes/contact.js';
+import webhookRoutes from './routes/kylasWebhook.js'
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(express.json());
 
 app.use('/api/kylas', kylasRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/kylas', webhookRoutes);
 
 app.use((req, res, next) => {
   res.setHeader('X-Frame-Options', 'ALLOWALL'); // 🟢 allow iframe embedding

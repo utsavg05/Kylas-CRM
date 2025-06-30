@@ -19,7 +19,7 @@ const IVRWidget = () => {
 
   return (
     <div className="p-6 text-white bg-[#0f172a] min-h-screen">
-      <h2 className="text-2xl font-bold mb-4">📞 IVR CRM Widget</h2>
+      <h2 className="text-2xl font-bold mb-4">📞 IVR Click to Call</h2>
       {contactInfo ? (
         <div>
           <p><strong>Name:</strong> {contactInfo.first_name} {contactInfo.last_name}</p>

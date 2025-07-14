@@ -5,13 +5,17 @@ import dotenv from 'dotenv'
 import qs from 'qs';
 import path from 'path';
 
+import connectDB from './config/connectDB.js';
+
 import kylasRoutes from './routes/kylas.js';
 import contactRoutes from './routes/contact.js';
+import ivrTokenRoutes from './routes/ivrTokenRoutes.js';
 import webhookRoutes from './routes/kylasWebhook.js'
 
 dotenv.config();
 
 import { fileURLToPath } from 'url';
+import { CLIENT_RENEG_WINDOW } from 'tls';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,6 +29,7 @@ app.use(express.json());
 
 app.use('/api/kylas', kylasRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/ivr-token', ivrTokenRoutes);
 app.use('/api/kylas', webhookRoutes);
 
 app.use((req, res, next) => {
@@ -68,6 +73,7 @@ app.post('/oauth/callback', async (req, res) => {
     const { access_token, refresh_token } = tokenRes.data;
     process.env.ACCESS_TOKEN = access_token; // 🔁 TEMPORARY STORAGE (for local test)
 
+    console.log('Data: ', tokenRes.data);
     console.log('✅ Kylas Access Token:', access_token);
     console.log('🔁 Kylas Refresh Token:', refresh_token);
 
@@ -140,5 +146,6 @@ app.get("/{*any}", (req, res) => {
 
 // ✅ Start server
 app.listen(PORT, () => {
+  connectDB()
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

@@ -137,10 +137,7 @@ app.get('/api/leads', async (req, res) => {
 });
 
 
-app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));
-app.get("/{*any}", (req, res) => {
-  res.sendFile(path.join(__dirname, '../kylas-frontend/dist/index.html'));
-});
+
 
 
 // 5. Custom json modal
@@ -203,6 +200,13 @@ app.get('/person-action-modal', async (req, res) => {
     });
   }
 })
+
+app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));
+app.get("/{*any}", (req, res) => {
+  res.sendFile(path.join(__dirname, '../kylas-frontend/dist/index.html'));
+});
+// changed
+
 
 // ✅ Start server
 app.listen(PORT, () => {

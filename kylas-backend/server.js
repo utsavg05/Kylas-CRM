@@ -15,7 +15,6 @@ import webhookRoutes from './routes/kylasWebhook.js'
 dotenv.config();
 
 import { fileURLToPath } from 'url';
-import { CLIENT_RENEG_WINDOW } from 'tls';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -73,7 +72,6 @@ app.post('/oauth/callback', async (req, res) => {
     const { access_token, refresh_token } = tokenRes.data;
     process.env.ACCESS_TOKEN = access_token; // 🔁 TEMPORARY STORAGE (for local test)
 
-    console.log('Data: ', tokenRes.data);
     console.log('✅ Kylas Access Token:', access_token);
     console.log('🔁 Kylas Refresh Token:', refresh_token);
 

@@ -142,6 +142,68 @@ app.get("/{*any}", (req, res) => {
   res.sendFile(path.join(__dirname, '../kylas-frontend/dist/index.html'));
 });
 
+
+// 5. Custom json modal
+app.get('/person-action-modal', async (req, res) => {
+  try {
+    // Extract query parameters sent by Pipedrive
+    const { 
+      selectedIds, 
+      resource, 
+      view, 
+      userId, 
+      companyId, 
+      token 
+    } = req.query;
+
+    // Verify JWT token
+    
+    
+    // selectedIds contains the person ID(s) selected by user
+    const personIds = selectedIds ? selectedIds.split(',') : [];
+    console.log('Selected Person IDs:', personIds);
+    if (personIds.length === 0) {
+      return res.status(400).json({
+        error: { message: "No person selected" }
+      });
+    }
+
+
+    
+    
+    // Return schema with person data populated
+    res.json({
+      data: {
+        blocks: {
+          person_name: {
+            value: `**Name:** ${personData.name || 'N/A'}`,
+          },
+          person_email: {
+            value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
+          },
+          person_phone: {
+            value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
+          },
+          person_organization: {
+            value: `**Organization:** ${personData.org_name || 'N/A'}`,
+          },
+          // Set default action if needed
+          action_selection: {
+            value: null // or set a default
+          }
+        },
+        actions: {}
+      }
+    });
+
+  } catch (error) {
+    console.error('Error handling modal request:', error);
+    res.status(500).json({
+      error: { message: "Failed to load person data" }
+    });
+  }
+})
+
 // ✅ Start server
 app.listen(PORT, () => {
   // connectDB()

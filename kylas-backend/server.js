@@ -5,11 +5,11 @@ import dotenv from 'dotenv'
 import qs from 'qs';
 import path from 'path';
 
-import connectDB from './config/connectDB.js';
+// import connectDB from './config/connectDB.js';
 
 import kylasRoutes from './routes/kylas.js';
 import contactRoutes from './routes/contact.js';
-import ivrTokenRoutes from './routes/ivrTokenRoutes.js';
+// import ivrTokenRoutes from './routes/ivrTokenRoutes.js';
 import webhookRoutes from './routes/kylasWebhook.js'
 
 dotenv.config();
@@ -28,7 +28,7 @@ app.use(express.json());
 
 app.use('/api/kylas', kylasRoutes);
 app.use('/api/contact', contactRoutes);
-app.use('/api/ivr-token', ivrTokenRoutes);
+// app.use('/api/ivr-token', ivrTokenRoutes);
 app.use('/api/kylas', webhookRoutes);
 
 app.use((req, res, next) => {
@@ -144,6 +144,6 @@ app.get("/{*any}", (req, res) => {
 
 // ✅ Start server
 app.listen(PORT, () => {
-  connectDB()
+  // connectDB()
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });

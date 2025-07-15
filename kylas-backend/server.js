@@ -138,82 +138,83 @@ app.get('/api/leads', async (req, res) => {
 
 app.get('/assign-dialer-modal', (req, res) => {
   res.json({
-    view: {
-      title: "📞 Assign Leads to Dialer",
-      size: "l"
-    },
-    blocks: [
-      {
-        type: "select",
-        key: "dialer",
-        options: {
-          label: "Select Dialer",
-          isRequired: true,
-          items: [
-            { label: "Anmol Madan (Active)", value: "anmol_madan" },
-            { label: "Priya Sharma", value: "priya_sharma" }
-          ]
-        }
+    data: {
+      view: {
+        title: "📞 Assign Leads to Dialer",
+        size: "l"
       },
-      {
-        type: "datetime",
-        key: "schedule_datetime",
-        options: {
-          label: "Schedule Date & Time",
-          isRequired: true,
-          placeholder: "dd - mm - yyyy   -- : --"
+      blocks: [
+        {
+          type: "select",
+          key: "dialer",
+          options: {
+            label: "Select Dialer",
+            isRequired: true,
+            items: [
+              { label: "Anmol Madan (Active)", value: "anmol_madan" },
+              { label: "Priya Sharma", value: "priya_sharma" }
+            ]
+          }
+        },
+        {
+          type: "datetime",
+          key: "schedule_datetime",
+          options: {
+            label: "Schedule Date & Time",
+            isRequired: true,
+            placeholder: "dd - mm - yyyy   -- : --"
+          }
+        },
+        {
+          type: "select",
+          key: "timezone",
+          options: {
+            label: "Select Timezone",
+            isRequired: true,
+            items: [
+              { label: "Asia/Kolkata", value: "Asia/Kolkata" },
+              { label: "UTC", value: "UTC" },
+              { label: "America/New_York", value: "America/New_York" }
+            ]
+          }
+        },
+        {
+          type: "multiselect",
+          key: "selected_numbers",
+          options: {
+            label: "Selected Numbers",
+            placeholder: "Waiting for selection...",
+            isRequired: true,
+            items: [
+              { label: "+91 9876543210", value: "9876543210" },
+              { label: "+91 9123456789", value: "9123456789" }
+            ]
+          }
+        },
+        {
+          type: "text",
+          key: "person_info",
+          options: {
+            value: "**Name:** John Doe<br>**Email:** john@example.com<br>**Phone:** +1 555 1234567<br>**Organization:** Acme Corp",
+            markdown: true
+          }
         }
-      },
-      {
-        type: "select",
-        key: "timezone",
-        options: {
-          label: "Select Timezone",
-          isRequired: true,
-          items: [
-            { label: "Asia/Kolkata", value: "Asia/Kolkata" },
-            { label: "UTC", value: "UTC" },
-            { label: "America/New_York", value: "America/New_York" }
-          ]
+      ],
+      actions: [
+        {
+          type: "submit",
+          label: "📞 Assign to Dialer",
+          handler: "request",
+          style: "primary"
+        },
+        {
+          type: "cancel",
+          label: "Cancel"
         }
-      },
-      {
-        type: "multiselect",
-        key: "selected_numbers",
-        options: {
-          label: "Selected Numbers",
-          placeholder: "Waiting for selection...",
-          isRequired: true,
-          items: [
-            { label: "+91 9876543210", value: "9876543210" },
-            { label: "+91 9123456789", value: "9123456789" }
-          ]
-        }
-      },
-      {
-        type: "text",
-        key: "person_info",
-        options: {
-          value: "**Name:** John Doe<br>**Email:** john@example.com<br>**Phone:** +1 555 1234567<br>**Organization:** Acme Corp",
-          markdown: true
-        }
-      }
-    ],
-    actions: [
-      {
-        type: "submit",
-        label: "📞 Assign to Dialer",
-        handler: "request",
-        style: "primary"
-      },
-      {
-        type: "cancel",
-        label: "Cancel"
-      }
-    ]
+      ]
+    }
   });
 });
-
 
 app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));
 app.get("/{*any}", (req, res) => {

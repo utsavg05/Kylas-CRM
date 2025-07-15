@@ -153,14 +153,14 @@ app.get('/person-action-modal', async (req, res) => {
 
 res.json({
   data: {
-    view: {
-      title: "📞 Assign Leads to Dialer",
-      size: "large"
-    },
     blocks: {
+      heading_info: {
+        value: "📞 **Assign Leads to Dialer**",
+        markdown: true
+      },
       dialer_dropdown: {
         label: "Select Dialer",
-        type: "select",
+        placeholder: "Choose a dialer",
         isRequired: true,
         items: [
           { label: "Anmol Madan (Active)", value: "anmol_madan" },
@@ -169,13 +169,12 @@ res.json({
       },
       schedule_datetime: {
         label: "Schedule Date & Time",
-        type: "datetimepicker",
         placeholder: "dd-mm-yyyy --:--",
         isRequired: true
       },
       timezone: {
         label: "Select Timezone",
-        type: "select",
+        placeholder: "Choose timezone",
         isRequired: true,
         items: [
           { label: "Asia/Kolkata", value: "Asia/Kolkata" },
@@ -185,7 +184,6 @@ res.json({
       },
       selected_numbers: {
         label: "Selected Numbers",
-        type: "multiselect",
         placeholder: "Waiting for selection...",
         isRequired: true,
         items: [
@@ -195,15 +193,13 @@ res.json({
       }
     },
     actions: {
-      assign_to_dialer: {
+      submit_action: {
         label: "📞 Assign to Dialer",
-        handler: "request",
-        style: "primary"
+        handler: "request"
       },
       cancel_action: {
         label: "Cancel",
-        handler: "cancel",
-        style: "secondary"
+        handler: "cancel"
       }
     }
   }

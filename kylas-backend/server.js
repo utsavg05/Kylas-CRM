@@ -139,77 +139,73 @@ app.get('/api/leads', async (req, res) => {
 app.get('/person-action-modal', (req, res) => {
   res.json({
     data: {
-      sections: [
+      title: "📞 Assign Leads to Dialer",
+      fields: [
         {
-          fields: [
-            {
-              type: "select",
-              key: "dialer",
-              label: "Select Dialer",
-              isRequired: true,
-              options: {
-                items: [
-                  { label: "Anmol Madan (Active)", value: "anmol_madan" },
-                  { label: "Priya Sharma", value: "priya_sharma" }
-                ]
-              }
-            },
-            {
-              type: "datetime",
-              key: "schedule_datetime",
-              label: "Schedule Date & Time",
-              isRequired: true,
-              placeholder: "dd - mm - yyyy   -- : --"
-            },
-            {
-              type: "select",
-              key: "timezone",
-              label: "Select Timezone",
-              isRequired: true,
-              options: {
-                items: [
-                  { label: "Asia/Kolkata", value: "Asia/Kolkata" },
-                  { label: "UTC", value: "UTC" },
-                  { label: "America/New_York", value: "America/New_York" }
-                ]
-              }
-            },
-            {
-              type: "multiselect",
-              key: "selected_numbers",
-              label: "Selected Numbers",
-              placeholder: "Waiting for selection...",
-              isRequired: true,
-              options: {
-                items: [
-                  { label: "+91 9876543210", value: "9876543210" },
-                  { label: "+91 9123456789", value: "9123456789" }
-                ]
-              }
-            },
-            {
-              type: "note",
-              markdown: true,
-              content: "**Name:** John Doe<br>**Email:** john@example.com<br>**Phone:** +1 555 1234567<br>**Organization:** Acme Corp"
-            }
-          ]
+          type: "select",
+          key: "dialer",
+          label: "Select Dialer",
+          isRequired: true,
+          options: {
+            items: [
+              { label: "Anmol Madan (Active)", value: "anmol_madan" },
+              { label: "Priya Sharma", value: "priya_sharma" }
+            ]
+          }
+        },
+        {
+          type: "datetime",
+          key: "schedule_datetime",
+          label: "Schedule Date & Time",
+          isRequired: true,
+          placeholder: "dd - mm - yyyy   -- : --"
+        },
+        {
+          type: "select",
+          key: "timezone",
+          label: "Select Timezone",
+          isRequired: true,
+          options: {
+            items: [
+              { label: "Asia/Kolkata", value: "Asia/Kolkata" },
+              { label: "UTC", value: "UTC" },
+              { label: "America/New_York", value: "America/New_York" }
+            ]
+          }
+        },
+        {
+          type: "multiselect",
+          key: "selected_numbers",
+          label: "Selected Numbers",
+          placeholder: "Waiting for selection...",
+          isRequired: true,
+          options: {
+            items: [
+              { label: "+91 9876543210", value: "9876543210" },
+              { label: "+91 9123456789", value: "9123456789" }
+            ]
+          }
+        },
+        {
+          type: "note",
+          markdown: true,
+          content: "**Name:** John Doe<br>**Email:** john@example.com<br>**Phone:** +1 555 1234567<br>**Organization:** Acme Corp"
         }
       ],
-      actions: [
-        {
+      actions: {
+        submit: {
           type: "submit",
           label: "📞 Assign to Dialer",
           style: "primary"
         },
-        {
+        cancel: {
           type: "cancel",
           label: "Cancel"
         }
-      ]
+      }
     }
   });
 });
-
 
 app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));
 app.get("/{*any}", (req, res) => {

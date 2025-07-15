@@ -136,36 +136,38 @@ app.get('/api/leads', async (req, res) => {
   }
 });
 
-app.get('/person-action-modal', (req, res) => {
+router.get('/assign-dialer-modal', (req, res) => {
   res.json({
     data: {
-      title: "📞 Assign Leads to Dialer",
-      fields: [
-        {
-          type: "select",
-          key: "dialer",
-          label: "Select Dialer",
-          isRequired: true,
+      view: {
+        title: "📞 Assign Leads to Dialer",
+        size: "l"
+      },
+      blocks: {
+        dialer_select: {
+          $ref: "#/definitions/element-select",
           options: {
+            label: "Select Dialer",
+            isRequired: true,
             items: [
               { label: "Anmol Madan (Active)", value: "anmol_madan" },
               { label: "Priya Sharma", value: "priya_sharma" }
             ]
           }
         },
-        {
-          type: "datetime",
-          key: "schedule_datetime",
-          label: "Schedule Date & Time",
-          isRequired: true,
-          placeholder: "dd - mm - yyyy   -- : --"
-        },
-        {
-          type: "select",
-          key: "timezone",
-          label: "Select Timezone",
-          isRequired: true,
+        schedule_datetime: {
+          $ref: "#/definitions/element-datetime",
           options: {
+            label: "Schedule Date & Time",
+            isRequired: true,
+            placeholder: "dd - mm - yyyy   -- : --"
+          }
+        },
+        timezone_select: {
+          $ref: "#/definitions/element-select",
+          options: {
+            label: "Select Timezone",
+            isRequired: true,
             items: [
               { label: "Asia/Kolkata", value: "Asia/Kolkata" },
               { label: "UTC", value: "UTC" },
@@ -173,34 +175,38 @@ app.get('/person-action-modal', (req, res) => {
             ]
           }
         },
-        {
-          type: "multiselect",
-          key: "selected_numbers",
-          label: "Selected Numbers",
-          placeholder: "Waiting for selection...",
-          isRequired: true,
+        number_multiselect: {
+          $ref: "#/definitions/element-multiselect",
           options: {
+            label: "Selected Numbers",
+            placeholder: "Waiting for selection...",
+            isRequired: true,
             items: [
               { label: "+91 9876543210", value: "9876543210" },
               { label: "+91 9123456789", value: "9123456789" }
             ]
           }
         },
-        {
-          type: "note",
-          markdown: true,
-          content: "**Name:** John Doe<br>**Email:** john@example.com<br>**Phone:** +1 555 1234567<br>**Organization:** Acme Corp"
+        person_info_note: {
+          $ref: "#/definitions/element-text",
+          options: {
+            value: "**Name:** John Doe<br>**Email:** john@example.com<br>**Phone:** +1 555 1234567<br>**Organization:** Acme Corp",
+            markdown: true
+          }
         }
-      ],
+      },
       actions: {
-        submit: {
-          type: "submit",
-          label: "📞 Assign to Dialer",
-          style: "primary"
+        submit_action: {
+          $ref: "#/definitions/action-primary",
+          options: {
+            label: "📞 Assign to Dialer"
+          }
         },
-        cancel: {
-          type: "cancel",
-          label: "Cancel"
+        cancel_action: {
+          $ref: "#/definitions/action-secondary",
+          options: {
+            label: "Cancel"
+          }
         }
       }
     }

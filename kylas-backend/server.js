@@ -136,11 +136,6 @@ app.get('/api/leads', async (req, res) => {
   }
 });
 
-
-
-
-
-// 5. Custom json modal
 app.get('/person-action-modal', async (req, res) => {
   try {
     // Extract query parameters sent by Pipedrive
@@ -159,72 +154,152 @@ app.get('/person-action-modal', async (req, res) => {
     const personIds = selectedIds ? selectedIds.split(',') : [];
     console.log('Selected Person IDs:', personIds);
     
-    // Initialize personData variable
-    let personData = null;
-    
-    if (personIds.length > 0) {
-      try {
-        // Fetch person data from Pipedrive or your database
-        personData = await fetchPersonData(personIds[0]); // Get first selected person
-        console.log('Fetched person data:', personData);
-      } catch (fetchError) {
-        console.error('Error fetching person data:', fetchError);
-        // Set default values if fetch fails
-        personData = {
-          name: 'Unable to load name',
-          email: [],
-          phone: [],
-          org_name: 'Unable to load organization'
-        };
-      }
-    } else {
-      // No person selected - return error or default
+    if (personIds.length === 0) {
       return res.status(400).json({
         error: { message: "No person selected" }
       });
     }
     
-    // Return schema with person data populated
+    // FETCH PERSON DATA - This was missing!
+    let personData = null;
+    try {
+      personData = await fetchPersonData(personIds[0]); // Get first selected person
+      console.log('Fetched person data:', personData);
+    } catch (fetchError) {
+      console.error('Error fetching person data:', fetchError);
+      return res.status(500).json({
+        error: { message: "Failed to load person data" }
+      });
+    }
+    
+    // Return schema with person data populated (matching your JSON structure)
     res.json({
       data: {
         blocks: {
-          person_info: {
+          person_info_header: {
             type: "text",
-            value: `**Selected Person Details:**\n\n**Name:** ${personData.name || 'N/A'}\n**Email:** ${personData.email?.[0]?.value || 'N/A'}\n**Phone:** ${personData.phone?.[0]?.value || 'N/A'}\n**Organization:** ${personData.org_name || 'N/A'}`,
+            value: "# Selected Person Information",
             markdown: true
           },
-          separator1: {
-            type: "separator"
+          person_name: {
+            type: "text",
+            value: `**Name:** ${personData.name || 'N/A'}`,
+            markdown: true
+          },
+          person_email: {
+            type: "text",
+            value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
+            markdown: true
+          },
+          person_phone: {
+            type: "text",
+            value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
+            markdown: true
+          },
+          person_organization: {
+            type: "text",
+            value: `**Organization:** ${personData.org_name || 'N/A'}`,
+            markdown: true
           },
           action_selection: {
             type: "select",
-            label: "Choose an action",
-            placeholder: "Select what you want to do...",
+            label: "What would you like to do with this person?",
+            placeholder: "Select an action",
             isRequired: true,
             items: [
-              { label: "Add to Email Campaign", value: "email_campaign" },
-              { label: "Create Follow-up Task", value: "create_task" },
-              { label: "Update Person Status", value: "update_status" },
-              { label: "Add Note", value: "add_note" }
+              {
+                label: "Send Email Campaign",
+                value: "email_campaign"
+              },
+              {
+                label: "Add to Project",
+                value: "add_project"
+              },
+              {
+                label: "Schedule Follow-up",
+                value: "schedule_followup"
+              },
+              {
+                label: "Export Contact",
+                value: "export_contact"
+              }
             ]
           },
-          notes: {
-            type: "textarea",
-            label: "Additional Notes",
-            placeholder: "Enter any additional notes...",
-            resize: "vertical"
+          project_selection: {
+            type: "select",
+            label: "Select Project",
+            placeholder: "Choose a project",
+            isRequired: true,
+            visibleOn: {
+              action_selection: {
+                rule: "equals",
+                value: "add_project"
+              }
+            },
+            items: [
+              {
+                label: "Q1 Marketing Campaign",
+                value: "project_1"
+              },
+              {
+                label: "Product Launch",
+                value: "project_2"
+              },
+              {
+                label: "Customer Onboarding",
+                value: "project_3"
+              }
+            ]
+          },
+          followup_date: {
+            type: "datepicker",
+            label: "Follow-up Date",
+            placeholder: "Select date",
+            message: "When should we follow up with this person?",
+            isRequired: true,
+            visibleOn: {
+              action_selection: {
+                rule: "equals",
+                value: "schedule_followup"
+              }
+            }
+          },
+          export_format: {
+            type: "radio",
+            label: "Export Format",
+            isRequired: true,
+            visibleOn: {
+              action_selection: {
+                rule: "equals",
+                value: "export_contact"
+              }
+            },
+            items: [
+              {
+                label: "CSV",
+                value: "csv"
+              },
+              {
+                label: "JSON",
+                value: "json"
+              },
+              {
+                label: "vCard",
+                value: "vcard"
+              }
+            ]
           }
         },
         actions: {
-          primary: {
-            type: "action",
-            label: "Submit",
-            handler: "request"
-          },
-          secondary: {
+          cancel_action: {
             type: "action",
             label: "Cancel",
             handler: "cancel"
+          },
+          submit_action: {
+            type: "action",
+            label: "Execute Action",
+            handler: "request"
           }
         }
       }
@@ -238,7 +313,7 @@ app.get('/person-action-modal', async (req, res) => {
   }
 });
 
-// Function to return test person data (no API calls)
+// Function to return test person data
 async function fetchPersonData(personId) {
   try {
     console.log(`Returning test data for person ID: ${personId}`);
@@ -297,22 +372,28 @@ app.post('/person-action-modal', async (req, res) => {
     console.log('Form submission data:', req.body);
     
     const formData = req.body;
-    const { action_selection, notes } = formData;
+    const { action_selection, project_selection, followup_date, export_format } = formData;
     
     // Process the selected action
     let result;
+    let successMessage;
+    
     switch (action_selection) {
       case 'email_campaign':
-        result = await addToEmailCampaign(formData);
+        result = await processEmailCampaign(formData);
+        successMessage = 'Person added to email campaign successfully!';
         break;
-      case 'create_task':
-        result = await createFollowupTask(formData);
+      case 'add_project':
+        result = await addToProject(formData, project_selection);
+        successMessage = `Person added to project successfully!`;
         break;
-      case 'update_status':
-        result = await updatePersonStatus(formData);
+      case 'schedule_followup':
+        result = await scheduleFollowup(formData, followup_date);
+        successMessage = `Follow-up scheduled for ${followup_date}!`;
         break;
-      case 'add_note':
-        result = await addPersonNote(formData);
+      case 'export_contact':
+        result = await exportContact(formData, export_format);
+        successMessage = `Contact exported as ${export_format.toUpperCase()}!`;
         break;
       default:
         throw new Error('Invalid action selected');
@@ -321,7 +402,7 @@ app.post('/person-action-modal', async (req, res) => {
     // Return success response
     res.json({
       success: {
-        message: `Successfully ${action_selection.replace('_', ' ')} for the selected person!`,
+        message: successMessage,
         type: "snackbar",
         link: {
           label: "View Results",
@@ -340,38 +421,42 @@ app.post('/person-action-modal', async (req, res) => {
   }
 });
 
-// Helper functions for different actions (returning test results)
-async function addToEmailCampaign(formData) {
-  console.log('Test: Adding to email campaign:', formData);
+// Helper functions for different actions
+async function processEmailCampaign(formData) {
+  console.log('Test: Processing email campaign:', formData);
   return { 
     id: 'campaign-' + Date.now(),
-    message: 'Person added to email campaign successfully'
+    message: 'Email campaign processed successfully'
   };
 }
 
-async function createFollowupTask(formData) {
-  console.log('Test: Creating follow-up task:', formData);
+async function addToProject(formData, projectId) {
+  console.log('Test: Adding to project:', formData, 'Project ID:', projectId);
   return { 
-    id: 'task-' + Date.now(),
-    message: 'Follow-up task created successfully'
+    id: 'project-' + Date.now(),
+    message: 'Person added to project successfully'
   };
 }
 
-async function updatePersonStatus(formData) {
-  console.log('Test: Updating person status:', formData);
+async function scheduleFollowup(formData, date) {
+  console.log('Test: Scheduling follow-up:', formData, 'Date:', date);
   return { 
-    id: 'status-' + Date.now(),
-    message: 'Person status updated successfully'
+    id: 'followup-' + Date.now(),
+    message: 'Follow-up scheduled successfully'
   };
 }
 
-async function addPersonNote(formData) {
-  console.log('Test: Adding person note:', formData);
+async function exportContact(formData, format) {
+  console.log('Test: Exporting contact:', formData, 'Format:', format);
   return { 
-    id: 'note-' + Date.now(),
-    message: 'Note added to person successfully'
+    id: 'export-' + Date.now(),
+    message: 'Contact exported successfully'
   };
 }
+
+
+
+
 
 app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));
 app.get("/{*any}", (req, res) => {

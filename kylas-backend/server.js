@@ -138,7 +138,6 @@ app.get('/api/leads', async (req, res) => {
 
 app.get('/person-action-modal', async (req, res) => {
   try {
-    // Extract query parameters sent by Pipedrive
     const { 
       selectedIds, 
       resource, 
@@ -147,32 +146,44 @@ app.get('/person-action-modal', async (req, res) => {
       companyId, 
       token 
     } = req.query;
-    
+
     console.log('Request params:', { selectedIds, resource, view, userId, companyId });
-    
-    // selectedIds contains the person ID(s) selected by user
+
     const personIds = selectedIds ? selectedIds.split(',') : [];
     console.log('Selected Person IDs:', personIds);
-    
-    if (personIds.length === 0) {
-      return res.status(400).json({
-        error: { message: "No person selected" }
+
+    // ✅ If no selection, still return a valid modal
+    if (personIds.length === 0 || !personIds[0]) {
+      return res.json({
+        data: {
+          blocks: {
+            person_info_header: {
+              type: "text",
+              value: "# No person selected",
+              markdown: true
+            },
+            person_name: {
+              type: "text",
+              value: "Please select a person before opening the action modal.",
+              markdown: true
+            }
+          },
+          actions: {
+            cancel_action: {
+              type: "action",
+              label: "Close",
+              handler: "cancel"
+            }
+          }
+        }
       });
     }
-    
-    // FETCH PERSON DATA - This was missing!
-    let personData = null;
-    try {
-      personData = await fetchPersonData(personIds[0]); // Get first selected person
-      console.log('Fetched person data:', personData);
-    } catch (fetchError) {
-      console.error('Error fetching person data:', fetchError);
-      return res.status(500).json({
-        error: { message: "Failed to load person data" }
-      });
-    }
-    
-    // Return schema with person data populated (matching your JSON structure)
+
+    // ✅ Fetch person data (you can connect to real Pipedrive API here later)
+    let personData = await fetchPersonData(personIds[0]);
+    console.log('Fetched person data:', personData);
+
+    // ✅ Respond with JSON schema modal
     res.json({
       data: {
         blocks: {
@@ -207,22 +218,10 @@ app.get('/person-action-modal', async (req, res) => {
             placeholder: "Select an action",
             isRequired: true,
             items: [
-              {
-                label: "Send Email Campaign",
-                value: "email_campaign"
-              },
-              {
-                label: "Add to Project",
-                value: "add_project"
-              },
-              {
-                label: "Schedule Follow-up",
-                value: "schedule_followup"
-              },
-              {
-                label: "Export Contact",
-                value: "export_contact"
-              }
+              { label: "Send Email Campaign", value: "email_campaign" },
+              { label: "Add to Project", value: "add_project" },
+              { label: "Schedule Follow-up", value: "schedule_followup" },
+              { label: "Export Contact", value: "export_contact" }
             ]
           },
           project_selection: {
@@ -231,24 +230,12 @@ app.get('/person-action-modal', async (req, res) => {
             placeholder: "Choose a project",
             isRequired: true,
             visibleOn: {
-              action_selection: {
-                rule: "equals",
-                value: "add_project"
-              }
+              action_selection: { rule: "equals", value: "add_project" }
             },
             items: [
-              {
-                label: "Q1 Marketing Campaign",
-                value: "project_1"
-              },
-              {
-                label: "Product Launch",
-                value: "project_2"
-              },
-              {
-                label: "Customer Onboarding",
-                value: "project_3"
-              }
+              { label: "Q1 Marketing Campaign", value: "project_1" },
+              { label: "Product Launch", value: "project_2" },
+              { label: "Customer Onboarding", value: "project_3" }
             ]
           },
           followup_date: {
@@ -258,10 +245,7 @@ app.get('/person-action-modal', async (req, res) => {
             message: "When should we follow up with this person?",
             isRequired: true,
             visibleOn: {
-              action_selection: {
-                rule: "equals",
-                value: "schedule_followup"
-              }
+              action_selection: { rule: "equals", value: "schedule_followup" }
             }
           },
           export_format: {
@@ -269,190 +253,27 @@ app.get('/person-action-modal', async (req, res) => {
             label: "Export Format",
             isRequired: true,
             visibleOn: {
-              action_selection: {
-                rule: "equals",
-                value: "export_contact"
-              }
+              action_selection: { rule: "equals", value: "export_contact" }
             },
             items: [
-              {
-                label: "CSV",
-                value: "csv"
-              },
-              {
-                label: "JSON",
-                value: "json"
-              },
-              {
-                label: "vCard",
-                value: "vcard"
-              }
+              { label: "CSV", value: "csv" },
+              { label: "JSON", value: "json" },
+              { label: "vCard", value: "vcard" }
             ]
           }
         },
         actions: {
-          cancel_action: {
-            type: "action",
-            label: "Cancel",
-            handler: "cancel"
-          },
-          submit_action: {
-            type: "action",
-            label: "Execute Action",
-            handler: "request"
-          }
+          cancel_action: { type: "action", label: "Cancel", handler: "cancel" },
+          submit_action: { type: "action", label: "Execute Action", handler: "request" }
         }
       }
     });
-    
+
   } catch (error) {
     console.error('Error handling modal request:', error);
-    res.status(500).json({
-      error: { message: "Failed to load person data" }
-    });
+    res.status(500).json({ error: { message: "Failed to load person data" } });
   }
 });
-
-// Function to return test person data
-async function fetchPersonData(personId) {
-  try {
-    console.log(`Returning test data for person ID: ${personId}`);
-    
-    // Test data based on person ID
-    const testPersons = {
-      '288': {
-        id: '288',
-        name: 'Sarah Johnson',
-        email: [{ value: 'sarah.johnson@techcorp.com', primary: true }],
-        phone: [{ value: '+1-555-0198', primary: true }],
-        org_name: 'TechCorp Solutions',
-        title: 'Marketing Director',
-        status: 'active'
-      },
-      '289': {
-        id: '289',
-        name: 'Michael Chen',
-        email: [{ value: 'michael.chen@innovate.com', primary: true }],
-        phone: [{ value: '+1-555-0287', primary: true }],
-        org_name: 'Innovate Industries',
-        title: 'Product Manager',
-        status: 'active'
-      },
-      '290': {
-        id: '290',
-        name: 'Emily Rodriguez',
-        email: [{ value: 'emily.rodriguez@startup.io', primary: true }],
-        phone: [{ value: '+1-555-0376', primary: true }],
-        org_name: 'StartupXYZ',
-        title: 'CEO',
-        status: 'active'
-      }
-    };
-    
-    // Return specific test person or default
-    return testPersons[personId] || {
-      id: personId,
-      name: `Test Person ${personId}`,
-      email: [{ value: `person${personId}@example.com`, primary: true }],
-      phone: [{ value: `+1-555-${personId.padStart(4, '0')}`, primary: true }],
-      org_name: `Company ${personId}`,
-      title: 'Sales Representative',
-      status: 'active'
-    };
-    
-  } catch (error) {
-    console.error('Error in fetchPersonData:', error);
-    throw error;
-  }
-}
-
-// POST endpoint to handle form submission
-app.post('/person-action-modal', async (req, res) => {
-  try {
-    console.log('Form submission data:', req.body);
-    
-    const formData = req.body;
-    const { action_selection, project_selection, followup_date, export_format } = formData;
-    
-    // Process the selected action
-    let result;
-    let successMessage;
-    
-    switch (action_selection) {
-      case 'email_campaign':
-        result = await processEmailCampaign(formData);
-        successMessage = 'Person added to email campaign successfully!';
-        break;
-      case 'add_project':
-        result = await addToProject(formData, project_selection);
-        successMessage = `Person added to project successfully!`;
-        break;
-      case 'schedule_followup':
-        result = await scheduleFollowup(formData, followup_date);
-        successMessage = `Follow-up scheduled for ${followup_date}!`;
-        break;
-      case 'export_contact':
-        result = await exportContact(formData, export_format);
-        successMessage = `Contact exported as ${export_format.toUpperCase()}!`;
-        break;
-      default:
-        throw new Error('Invalid action selected');
-    }
-    
-    // Return success response
-    res.json({
-      success: {
-        message: successMessage,
-        type: "snackbar",
-        link: {
-          label: "View Results",
-          value: `https://your-app.com/results/${result.id}`
-        }
-      }
-    });
-    
-  } catch (error) {
-    console.error('Error processing form submission:', error);
-    res.status(400).json({
-      error: {
-        message: "Failed to process the action. Please try again."
-      }
-    });
-  }
-});
-
-// Helper functions for different actions
-async function processEmailCampaign(formData) {
-  console.log('Test: Processing email campaign:', formData);
-  return { 
-    id: 'campaign-' + Date.now(),
-    message: 'Email campaign processed successfully'
-  };
-}
-
-async function addToProject(formData, projectId) {
-  console.log('Test: Adding to project:', formData, 'Project ID:', projectId);
-  return { 
-    id: 'project-' + Date.now(),
-    message: 'Person added to project successfully'
-  };
-}
-
-async function scheduleFollowup(formData, date) {
-  console.log('Test: Scheduling follow-up:', formData, 'Date:', date);
-  return { 
-    id: 'followup-' + Date.now(),
-    message: 'Follow-up scheduled successfully'
-  };
-}
-
-async function exportContact(formData, format) {
-  console.log('Test: Exporting contact:', formData, 'Format:', format);
-  return { 
-    id: 'export-' + Date.now(),
-    message: 'Contact exported successfully'
-  };
-}
 
 
 

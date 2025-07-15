@@ -138,6 +138,7 @@ app.get('/api/leads', async (req, res) => {
 
 app.get('/person-action-modal', async (req, res) => {
   try {
+    // Extract query parameters sent by Pipedrive
     const { 
       selectedIds, 
       resource, 
@@ -147,134 +148,53 @@ app.get('/person-action-modal', async (req, res) => {
       token 
     } = req.query;
 
-    console.log('Request params:', { selectedIds, resource, view, userId, companyId });
-
+    // Verify JWT token
+    
+    
+    // selectedIds contains the person ID(s) selected by user
     const personIds = selectedIds ? selectedIds.split(',') : [];
     console.log('Selected Person IDs:', personIds);
+    // if (personIds.length === 0) {
+    //   return res.status(400).json({
+    //     error: { message: "No person selected" }
+    //   });
+    // }
 
-    // ✅ If no selection, still return a valid modal
-    if (personIds.length === 0 || !personIds[0]) {
-      return res.json({
-        data: {
-          blocks: {
-            person_info_header: {
-              type: "text",
-              value: "# No person selected",
-              markdown: true
-            },
-            person_name: {
-              type: "text",
-              value: "Please select a person before opening the action modal.",
-              markdown: true
-            }
-          },
-          actions: {
-            cancel_action: {
-              type: "action",
-              label: "Close",
-              handler: "cancel"
-            }
-          }
-        }
-      });
-    }
 
-    // ✅ Fetch person data (you can connect to real Pipedrive API here later)
-    let personData = await fetchPersonData(personIds[0]);
-    console.log('Fetched person data:', personData);
-
-    // ✅ Respond with JSON schema modal
+    
+    
+    // Return schema with person data populated
     res.json({
       data: {
         blocks: {
-          person_info_header: {
-            type: "text",
-            value: "# Selected Person Information",
-            markdown: true
-          },
           person_name: {
-            type: "text",
             value: `**Name:** ${personData.name || 'N/A'}`,
-            markdown: true
           },
           person_email: {
-            type: "text",
             value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
-            markdown: true
           },
           person_phone: {
-            type: "text",
             value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
-            markdown: true
           },
           person_organization: {
-            type: "text",
             value: `**Organization:** ${personData.org_name || 'N/A'}`,
-            markdown: true
           },
+          // Set default action if needed
           action_selection: {
-            type: "select",
-            label: "What would you like to do with this person?",
-            placeholder: "Select an action",
-            isRequired: true,
-            items: [
-              { label: "Send Email Campaign", value: "email_campaign" },
-              { label: "Add to Project", value: "add_project" },
-              { label: "Schedule Follow-up", value: "schedule_followup" },
-              { label: "Export Contact", value: "export_contact" }
-            ]
-          },
-          project_selection: {
-            type: "select",
-            label: "Select Project",
-            placeholder: "Choose a project",
-            isRequired: true,
-            visibleOn: {
-              action_selection: { rule: "equals", value: "add_project" }
-            },
-            items: [
-              { label: "Q1 Marketing Campaign", value: "project_1" },
-              { label: "Product Launch", value: "project_2" },
-              { label: "Customer Onboarding", value: "project_3" }
-            ]
-          },
-          followup_date: {
-            type: "datepicker",
-            label: "Follow-up Date",
-            placeholder: "Select date",
-            message: "When should we follow up with this person?",
-            isRequired: true,
-            visibleOn: {
-              action_selection: { rule: "equals", value: "schedule_followup" }
-            }
-          },
-          export_format: {
-            type: "radio",
-            label: "Export Format",
-            isRequired: true,
-            visibleOn: {
-              action_selection: { rule: "equals", value: "export_contact" }
-            },
-            items: [
-              { label: "CSV", value: "csv" },
-              { label: "JSON", value: "json" },
-              { label: "vCard", value: "vcard" }
-            ]
+            value: null // or set a default
           }
         },
-        actions: {
-          cancel_action: { type: "action", label: "Cancel", handler: "cancel" },
-          submit_action: { type: "action", label: "Execute Action", handler: "request" }
-        }
+        actions: {}
       }
     });
 
   } catch (error) {
     console.error('Error handling modal request:', error);
-    res.status(500).json({ error: { message: "Failed to load person data" } });
+    res.status(500).json({
+      error: { message: "Failed to load person data" }
+    });
   }
-});
-
+})
 
 
 

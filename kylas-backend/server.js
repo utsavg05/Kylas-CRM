@@ -143,10 +143,9 @@ app.get('/assign-dialer-modal', (req, res) => {
         title: "📞 Assign Leads to Dialer",
         size: "l"
       },
-      blocks: [
-        {
+      blocks: {
+        dialer: {
           type: "select",
-          key: "dialer",
           options: {
             label: "Select Dialer",
             isRequired: true,
@@ -156,18 +155,16 @@ app.get('/assign-dialer-modal', (req, res) => {
             ]
           }
         },
-        {
+        schedule_datetime: {
           type: "datetime",
-          key: "schedule_datetime",
           options: {
             label: "Schedule Date & Time",
             isRequired: true,
             placeholder: "dd - mm - yyyy   -- : --"
           }
         },
-        {
+        timezone: {
           type: "select",
-          key: "timezone",
           options: {
             label: "Select Timezone",
             isRequired: true,
@@ -178,9 +175,8 @@ app.get('/assign-dialer-modal', (req, res) => {
             ]
           }
         },
-        {
+        selected_numbers: {
           type: "multiselect",
-          key: "selected_numbers",
           options: {
             label: "Selected Numbers",
             placeholder: "Waiting for selection...",
@@ -191,27 +187,26 @@ app.get('/assign-dialer-modal', (req, res) => {
             ]
           }
         },
-        {
+        person_info: {
           type: "text",
-          key: "person_info",
           options: {
             value: "**Name:** John Doe<br>**Email:** john@example.com<br>**Phone:** +1 555 1234567<br>**Organization:** Acme Corp",
             markdown: true
           }
         }
-      ],
-      actions: [
-        {
+      },
+      actions: {
+        submit_action: {
           type: "submit",
           label: "📞 Assign to Dialer",
           handler: "request",
           style: "primary"
         },
-        {
+        cancel_action: {
           type: "cancel",
           label: "Cancel"
         }
-      ]
+      }
     }
   });
 });

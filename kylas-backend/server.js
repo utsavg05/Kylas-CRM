@@ -155,34 +155,34 @@ app.get('/person-action-modal', async (req, res) => {
       data: {
         blocks: {
           person_info_header: {
-            type: "text",
+        
             value: "# Selected Person Information",
             markdown: true
           },
           person_name: {
-            type: "text",
+            
             value: `**Name:** ${personData.name || 'N/A'}`,
             markdown: true
           },
           person_email: {
-            type: "text",
+            
             value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
             markdown: true
           },
           person_phone: {
-            type: "text",
+            
             value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
             markdown: true
           },
           person_organization: {
-            type: "text",
+            
             value: `**Organization:** ${personData.org_name || 'N/A'}`,
             markdown: true
           }
         },
         actions: {
           close: {
-            type: "action",
+            
             label: "Close",
             handler: "cancel"
           }

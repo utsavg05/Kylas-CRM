@@ -153,6 +153,9 @@ app.get('/person-action-modal', async (req, res) => {
 
     res.json({
   data: {
+    view: {
+      size: "large"  // ✅ Makes the modal wider
+    },
     blocks: {
       person_name: {
         value: `**Name:** ${personData.name || 'N/A'}`,

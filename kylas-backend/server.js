@@ -151,84 +151,59 @@ app.get('/person-action-modal', async (req, res) => {
 
     const personData = await fetchPersonData(personIds[0]); // Only first person
 
-    res.json({
+res.json({
   data: {
-    
+    view: {
+      title: "📞 Assign Leads to Dialer",
+      size: "large"
+    },
     blocks: {
-      person_name: {
-        value: `**Name:** ${personData.name || 'N/A'}`,
-        markdown: true
-      },
-      person_email: {
-        value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
-        markdown: true
-      },
-      person_phone: {
-        value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
-        markdown: true
-      },
-      person_organization: {
-        value: `**Organization:** ${personData.org_name || 'N/A'}`,
-        markdown: true
-      },
-      action_selection: {
-        label: "What would you like to do with this person?",
-        placeholder: "Select an action",
+      dialer_dropdown: {
+        label: "Select Dialer",
+        type: "select",
         isRequired: true,
         items: [
-          { label: "Send Email Campaign", value: "email_campaign" },
-          { label: "Add to Project", value: "add_project" },
-          { label: "Schedule Follow-up", value: "schedule_followup" },
-          { label: "Export Contact", value: "export_contact" }
+          { label: "Anmol Madan (Active)", value: "anmol_madan" },
+          { label: "Priya Sharma", value: "priya_sharma" }
         ]
       },
-      project_selection: {
-        label: "Select Project",
-        placeholder: "Choose a project",
+      schedule_datetime: {
+        label: "Schedule Date & Time",
+        type: "datetimepicker",
+        placeholder: "dd-mm-yyyy --:--",
+        isRequired: true
+      },
+      timezone: {
+        label: "Select Timezone",
+        type: "select",
         isRequired: true,
-        visibleOn: {
-          action_selection: { equals: "add_project" }
-        },
         items: [
-          { label: "Q1 Marketing Campaign", value: "project_1" },
-          { label: "Product Launch", value: "project_2" },
-          { label: "Customer Onboarding", value: "project_3" }
+          { label: "Asia/Kolkata", value: "Asia/Kolkata" },
+          { label: "UTC", value: "UTC" },
+          { label: "America/New_York", value: "America/New_York" }
         ]
       },
-      followup_date: {
-        label: "Follow-up Date",
-        placeholder: "Select date",
-        message: "When should we follow up with this person?",
+      selected_numbers: {
+        label: "Selected Numbers",
+        type: "multiselect",
+        placeholder: "Waiting for selection...",
         isRequired: true,
-        visibleOn: {
-          action_selection: { equals: "schedule_followup" }
-        }
-      },
-      export_format: {
-        label: "Export Format",
-        isRequired: true,
-        visibleOn: {
-          action_selection: { equals: "export_contact" }
-        },
         items: [
-          { label: "CSV", value: "csv" },
-          { label: "JSON", value: "json" },
-          { label: "vCard", value: "vcard" }
+          { label: "+91 9876543210", value: "9876543210" },
+          { label: "+91 9123456789", value: "9123456789" }
         ]
-      },
-      person_info_header: {
-        value: "# Selected Person Information",
-        markdown: true
       }
     },
     actions: {
+      assign_to_dialer: {
+        label: "📞 Assign to Dialer",
+        handler: "request",
+        style: "primary"
+      },
       cancel_action: {
         label: "Cancel",
-        handler: "cancel"
-      },
-      submit_action: {
-        label: "Execute Action",
-        handler: "request"
+        handler: "cancel",
+        style: "secondary"
       }
     }
   }

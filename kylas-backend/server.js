@@ -150,49 +150,63 @@ app.get('/person-action-modal', async (req, res) => {
     }
 
     const personData = await fetchPersonData(personIds[0]); // Only first person
-
 res.json({
   data: {
+    view: {
+      title: "📞 Assign Leads to Dialer",
+      size: "l"
+    },
     blocks: {
-      section_header: {
-        value: "# 📞 Assign Leads to Dialer",
-        markdown: true
+      dialer_select: {
+        $ref: "select",
+        options: {
+          label: "Select Dialer",
+          isRequired: true,
+          items: [
+            { label: "Anmol Madan (Active)", value: "anmol_madan" },
+            { label: "Priya Sharma", value: "priya_sharma" }
+          ]
+        }
       },
-      select_1: {
-        label: "Select Dialer",
-        isRequired: true,
-        items: [
-          { label: "Anmol Madan (Active)", value: "anmol_madan" },
-          { label: "Priya Sharma", value: "priya_sharma" }
-        ]
+      schedule_datetime: {
+        $ref: "datetime",
+        options: {
+          label: "Schedule Date & Time",
+          isRequired: true,
+          placeholder: "dd - mm - yyyy   -- : --"
+        }
       },
-      date_1: {
-        label: "Schedule Date & Time",
-        isRequired: true
+      timezone_select: {
+        $ref: "select",
+        options: {
+          label: "Select Timezone",
+          isRequired: true,
+          placeholder: "-- Select Timezone --",
+          items: [
+            { label: "Asia/Kolkata", value: "Asia/Kolkata" },
+            { label: "UTC", value: "UTC" },
+            { label: "America/New_York", value: "America/New_York" }
+          ]
+        }
       },
-      select_2: {
-        label: "Select Timezone",
-        isRequired: true,
-        items: [
-          { label: "Asia/Kolkata", value: "Asia/Kolkata" },
-          { label: "UTC", value: "UTC" },
-          { label: "America/New_York", value: "America/New_York" }
-        ]
-      },
-      multiselect_1: {
-        label: "Selected Numbers",
-        placeholder: "Waiting for selection...",
-        isRequired: true,
-        items: [
-          { label: "+91 9876543210", value: "9876543210" },
-          { label: "+91 9123456789", value: "9123456789" }
-        ]
+      number_multiselect: {
+        $ref: "multiselect",
+        options: {
+          label: "Selected Numbers",
+          placeholder: "Waiting for selection...",
+          isRequired: true,
+          items: [
+            { label: "+91 9876543210", value: "9876543210" },
+            { label: "+91 9123456789", value: "9123456789" }
+          ]
+        }
       }
     },
     actions: {
-      submit_action: {
+      assign_action: {
         label: "📞 Assign to Dialer",
-        handler: "request"
+        handler: "request",
+        style: "primary"
       },
       cancel_action: {
         label: "Cancel",
@@ -201,6 +215,7 @@ res.json({
     }
   }
 });
+
 
 
 

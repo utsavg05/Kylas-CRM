@@ -136,126 +136,79 @@ app.get('/api/leads', async (req, res) => {
   }
 });
 
-app.get('/person-action-modal', async (req, res) => {
-  try {
-    const { selectedIds } = req.query;
-    const personIds = selectedIds ? selectedIds.split(',') : [];
-
-    console.log('Selected Person IDs:', personIds);
-
-    if (personIds.length === 0) {
-      return res.status(400).json({
-        error: { message: "No person selected" }
-      });
+app.get('/person-action-modal', (req, res) => {
+  res.json({
+    data: {
+      sections: [
+        {
+          fields: [
+            {
+              type: "select",
+              key: "dialer",
+              label: "Select Dialer",
+              isRequired: true,
+              options: {
+                items: [
+                  { label: "Anmol Madan (Active)", value: "anmol_madan" },
+                  { label: "Priya Sharma", value: "priya_sharma" }
+                ]
+              }
+            },
+            {
+              type: "datetime",
+              key: "schedule_datetime",
+              label: "Schedule Date & Time",
+              isRequired: true,
+              placeholder: "dd - mm - yyyy   -- : --"
+            },
+            {
+              type: "select",
+              key: "timezone",
+              label: "Select Timezone",
+              isRequired: true,
+              options: {
+                items: [
+                  { label: "Asia/Kolkata", value: "Asia/Kolkata" },
+                  { label: "UTC", value: "UTC" },
+                  { label: "America/New_York", value: "America/New_York" }
+                ]
+              }
+            },
+            {
+              type: "multiselect",
+              key: "selected_numbers",
+              label: "Selected Numbers",
+              placeholder: "Waiting for selection...",
+              isRequired: true,
+              options: {
+                items: [
+                  { label: "+91 9876543210", value: "9876543210" },
+                  { label: "+91 9123456789", value: "9123456789" }
+                ]
+              }
+            },
+            {
+              type: "note",
+              markdown: true,
+              content: "**Name:** John Doe<br>**Email:** john@example.com<br>**Phone:** +1 555 1234567<br>**Organization:** Acme Corp"
+            }
+          ]
+        }
+      ],
+      actions: [
+        {
+          type: "submit",
+          label: "📞 Assign to Dialer",
+          style: "primary"
+        },
+        {
+          type: "cancel",
+          label: "Cancel"
+        }
+      ]
     }
-
-    const personData = await fetchPersonData(personIds[0]); // Only first person
-res.json({
-  data: {
-    view: {
-      title: "📞 Assign Leads to Dialer",
-      size: "l"
-    },
-    blocks: {
-      dialer_select: {
-        $ref: "select",
-        options: {
-          label: "Select Dialer",
-          isRequired: true,
-          items: [
-            { label: "Anmol Madan (Active)", value: "anmol_madan" },
-            { label: "Priya Sharma", value: "priya_sharma" }
-          ]
-        }
-      },
-      schedule_datetime: {
-        $ref: "datetime",
-        options: {
-          label: "Schedule Date & Time",
-          isRequired: true,
-          placeholder: "dd - mm - yyyy   -- : --"
-        }
-      },
-      timezone_select: {
-        $ref: "select",
-        options: {
-          label: "Select Timezone",
-          isRequired: true,
-          placeholder: "-- Select Timezone --",
-          items: [
-            { label: "Asia/Kolkata", value: "Asia/Kolkata" },
-            { label: "UTC", value: "UTC" },
-            { label: "America/New_York", value: "America/New_York" }
-          ]
-        }
-      },
-      number_multiselect: {
-        $ref: "multiselect",
-        options: {
-          label: "Selected Numbers",
-          placeholder: "Waiting for selection...",
-          isRequired: true,
-          items: [
-            { label: "+91 9876543210", value: "9876543210" },
-            { label: "+91 9123456789", value: "9123456789" }
-          ]
-        }
-      }
-    },
-    actions: {
-      assign_action: {
-        label: "📞 Assign to Dialer",
-        handler: "request",
-        style: "primary"
-      },
-      cancel_action: {
-        label: "Cancel",
-        handler: "cancel"
-      }
-    }
-  }
+  });
 });
-
-
-
-
-  } catch (error) {
-    console.error('Error handling modal request:', error);
-    res.status(500).json({
-      error: { message: "Failed to load person data" }
-    });
-  }
-});
-
-// ✅ TEST DATA
-async function fetchPersonData(personId) {
-  const testPersons = {
-    '288': {
-      id: '288',
-      name: 'Sarah Johnson',
-      email: [{ value: 'sarah.johnson@techcorp.com', primary: true }],
-      phone: [{ value: '+1-555-0198', primary: true }],
-      org_name: 'TechCorp Solutions'
-    },
-    '289': {
-      id: '289',
-      name: 'Michael Chen',
-      email: [{ value: 'michael.chen@innovate.com', primary: true }],
-      phone: [{ value: '+1-555-0287', primary: true }],
-      org_name: 'Innovate Industries'
-    }
-  };
-
-  return testPersons[personId] || {
-    id: personId,
-    name: `Test Person ${personId}`,
-    email: [{ value: `person${personId}@example.com`, primary: true }],
-    phone: [{ value: `+1-555-${personId.padStart(4, '0')}`, primary: true }],
-    org_name: `Company ${personId}`
-  };
-}
-
-
 
 
 app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));

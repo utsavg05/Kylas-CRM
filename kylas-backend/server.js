@@ -136,7 +136,7 @@ app.get('/api/leads', async (req, res) => {
   }
 });
 
-router.get('/assign-dialer-modal', (req, res) => {
+app.get('/assign-dialer-modal', (req, res) => {
   res.json({
     data: {
       view: {

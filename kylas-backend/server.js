@@ -155,105 +155,79 @@ app.get('/person-action-modal', async (req, res) => {
   data: {
     blocks: {
       person_name: {
-        $ref: "#/definitions/element-text",
-        options: {
-          value: `**Name:** ${personData.name || 'N/A'}`,
-          markdown: true
-        }
+        value: `**Name:** ${personData.name || 'N/A'}`,
+        markdown: true
       },
       person_email: {
-        $ref: "#/definitions/element-text",
-        options: {
-          value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
-          markdown: true
-        }
+        value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
+        markdown: true
       },
       person_phone: {
-        $ref: "#/definitions/element-text",
-        options: {
-          value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
-          markdown: true
-        }
+        value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
+        markdown: true
       },
       person_organization: {
-        $ref: "#/definitions/element-text",
-        options: {
-          value: `**Organization:** ${personData.org_name || 'N/A'}`,
-          markdown: true
-        }
+        value: `**Organization:** ${personData.org_name || 'N/A'}`,
+        markdown: true
       },
       action_selection: {
-        $ref: "#/definitions/element-select",
-        options: {
-          label: "What would you like to do with this person?",
-          placeholder: "Select an action",
-          isRequired: true,
-          items: [
-            { label: "Send Email Campaign", value: "email_campaign" },
-            { label: "Add to Project", value: "add_project" },
-            { label: "Schedule Follow-up", value: "schedule_followup" },
-            { label: "Export Contact", value: "export_contact" }
-          ]
-        }
+        label: "What would you like to do with this person?",
+        placeholder: "Select an action",
+        isRequired: true,
+        items: [
+          { label: "Send Email Campaign", value: "email_campaign" },
+          { label: "Add to Project", value: "add_project" },
+          { label: "Schedule Follow-up", value: "schedule_followup" },
+          { label: "Export Contact", value: "export_contact" }
+        ]
       },
       project_selection: {
-        $ref: "#/definitions/element-select",
-        options: {
-          label: "Select Project",
-          placeholder: "Choose a project",
-          isRequired: true,
-          visibleOn: {
-            action_selection: { equals: "add_project" }
-          },
-          items: [
-            { label: "Q1 Marketing Campaign", value: "project_1" },
-            { label: "Product Launch", value: "project_2" },
-            { label: "Customer Onboarding", value: "project_3" }
-          ]
-        }
+        label: "Select Project",
+        placeholder: "Choose a project",
+        isRequired: true,
+        visibleOn: {
+          action_selection: { equals: "add_project" }
+        },
+        items: [
+          { label: "Q1 Marketing Campaign", value: "project_1" },
+          { label: "Product Launch", value: "project_2" },
+          { label: "Customer Onboarding", value: "project_3" }
+        ]
       },
       followup_date: {
-        $ref: "#/definitions/element-datepicker",
-        options: {
-          label: "Follow-up Date",
-          placeholder: "Select date",
-          message: "When should we follow up with this person?",
-          isRequired: true,
-          visibleOn: {
-            action_selection: { equals: "schedule_followup" }
-          }
+        label: "Follow-up Date",
+        placeholder: "Select date",
+        message: "When should we follow up with this person?",
+        isRequired: true,
+        visibleOn: {
+          action_selection: { equals: "schedule_followup" }
         }
       },
       export_format: {
-        $ref: "#/definitions/element-select",
-        options: {
-          label: "Export Format",
-          isRequired: true,
-          visibleOn: {
-            action_selection: { equals: "export_contact" }
-          },
-          items: [
-            { label: "CSV", value: "csv" },
-            { label: "JSON", value: "json" },
-            { label: "vCard", value: "vcard" }
-          ]
-        }
+        label: "Export Format",
+        isRequired: true,
+        visibleOn: {
+          action_selection: { equals: "export_contact" }
+        },
+        items: [
+          { label: "CSV", value: "csv" },
+          { label: "JSON", value: "json" },
+          { label: "vCard", value: "vcard" }
+        ]
+      },
+      person_info_header: {
+        value: "# Selected Person Information",
+        markdown: true
       }
     },
     actions: {
       cancel_action: {
-        $ref: "#/definitions/action-secondary",
-        options: {
-          label: "Cancel",
-          handler: "cancel"
-        }
+        label: "Cancel",
+        handler: "cancel"
       },
       submit_action: {
-        $ref: "#/definitions/action-primary",
-        options: {
-          label: "Execute Action",
-          handler: "request"
-        }
+        label: "Execute Action",
+        handler: "request"
       }
     }
   }

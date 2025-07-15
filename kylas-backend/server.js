@@ -138,53 +138,55 @@ app.get('/api/leads', async (req, res) => {
 
 app.get('/person-action-modal', async (req, res) => {
   try {
-    // Extract query parameters sent by Pipedrive
-    const { 
-      selectedIds, 
-      resource, 
-      view, 
-      userId, 
-      companyId, 
-      token 
-    } = req.query;
-
-    // Verify JWT token
-    
-    
-    // selectedIds contains the person ID(s) selected by user
+    const { selectedIds } = req.query;
     const personIds = selectedIds ? selectedIds.split(',') : [];
+
     console.log('Selected Person IDs:', personIds);
-    // if (personIds.length === 0) {
-    //   return res.status(400).json({
-    //     error: { message: "No person selected" }
-    //   });
-    // }
 
+    if (personIds.length === 0) {
+      return res.status(400).json({
+        error: { message: "No person selected" }
+      });
+    }
 
-    
-    
-    // Return schema with person data populated
+    const personData = await fetchPersonData(personIds[0]); // Only first person
+
     res.json({
       data: {
         blocks: {
+          person_info_header: {
+            type: "text",
+            value: "# Selected Person Information",
+            markdown: true
+          },
           person_name: {
+            type: "text",
             value: `**Name:** ${personData.name || 'N/A'}`,
+            markdown: true
           },
           person_email: {
+            type: "text",
             value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
+            markdown: true
           },
           person_phone: {
+            type: "text",
             value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
+            markdown: true
           },
           person_organization: {
+            type: "text",
             value: `**Organization:** ${personData.org_name || 'N/A'}`,
-          },
-          // Set default action if needed
-          action_selection: {
-            value: null // or set a default
+            markdown: true
           }
         },
-        actions: {}
+        actions: {
+          close: {
+            type: "action",
+            label: "Close",
+            handler: "cancel"
+          }
+        }
       }
     });
 
@@ -194,7 +196,35 @@ app.get('/person-action-modal', async (req, res) => {
       error: { message: "Failed to load person data" }
     });
   }
-})
+});
+
+// ✅ TEST DATA
+async function fetchPersonData(personId) {
+  const testPersons = {
+    '288': {
+      id: '288',
+      name: 'Sarah Johnson',
+      email: [{ value: 'sarah.johnson@techcorp.com', primary: true }],
+      phone: [{ value: '+1-555-0198', primary: true }],
+      org_name: 'TechCorp Solutions'
+    },
+    '289': {
+      id: '289',
+      name: 'Michael Chen',
+      email: [{ value: 'michael.chen@innovate.com', primary: true }],
+      phone: [{ value: '+1-555-0287', primary: true }],
+      org_name: 'Innovate Industries'
+    }
+  };
+
+  return testPersons[personId] || {
+    id: personId,
+    name: `Test Person ${personId}`,
+    email: [{ value: `person${personId}@example.com`, primary: true }],
+    phone: [{ value: `+1-555-${personId.padStart(4, '0')}`, primary: true }],
+    org_name: `Company ${personId}`
+  };
+}
 
 
 

@@ -154,27 +154,24 @@ app.get('/person-action-modal', async (req, res) => {
 res.json({
   data: {
     blocks: {
-      heading_info: {
-        value: "📞 **Assign Leads to Dialer**",
+      section_header: {
+        value: "# 📞 Assign Leads to Dialer",
         markdown: true
       },
-      dialer_dropdown: {
+      select_1: {
         label: "Select Dialer",
-        placeholder: "Choose a dialer",
         isRequired: true,
         items: [
           { label: "Anmol Madan (Active)", value: "anmol_madan" },
           { label: "Priya Sharma", value: "priya_sharma" }
         ]
       },
-      schedule_datetime: {
+      date_1: {
         label: "Schedule Date & Time",
-        placeholder: "dd-mm-yyyy --:--",
         isRequired: true
       },
-      timezone: {
+      select_2: {
         label: "Select Timezone",
-        placeholder: "Choose timezone",
         isRequired: true,
         items: [
           { label: "Asia/Kolkata", value: "Asia/Kolkata" },
@@ -182,7 +179,7 @@ res.json({
           { label: "America/New_York", value: "America/New_York" }
         ]
       },
-      selected_numbers: {
+      multiselect_1: {
         label: "Selected Numbers",
         placeholder: "Waiting for selection...",
         isRequired: true,
@@ -204,6 +201,7 @@ res.json({
     }
   }
 });
+
 
 
   } catch (error) {

@@ -181,7 +181,7 @@ app.get('/person-action-modal', async (req, res) => {
           { label: "Test", value: "4" }
         ]
       },
-      project_selection: {
+      action_selection: {
         label: "Select Timezone",
         placeholder: "Select the Timezone",
         isRequired: true,

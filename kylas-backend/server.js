@@ -191,13 +191,18 @@ app.get('/person-action-modal', async (req, res) => {
           { label: "Customer Onboarding", value: "project_3" }
         ]
       },
-      followup_date: {
-        label: "Follow-up Date",
-        placeholder: "Select date",
-        message: "When should we follow up with this person?",
-        isRequired: true,
-       
-      },
+      block_key_datepicker:{
+                    "$ref":"#/definitions/element-datepicker",
+                    "options":{
+                        "label":"Delivery date",
+                        "value":"2021-03-17",
+                        "message":"Cakes will be ready by 12:00 on selected date",
+                        "placeholder":"Date",
+                        "allowClear":true,
+                        "isRequired":true,
+                        "fetchOnChange":true
+                    }
+                },
 
       person_info_header: {
         value: "# Selected Person Information",

@@ -151,7 +151,7 @@ app.get('/person-action-modal', async (req, res) => {
 
     const personData = await fetchPersonData(personIds[0]); // Only first person
 
-   {
+   res.json({
   "data": {
     "title": "Assign Leads to Dialer",
     "blocks": {
@@ -235,7 +235,7 @@ app.get('/person-action-modal', async (req, res) => {
       }
     }
   }
-}
+})
 
   } catch (error) {
     console.error('Error handling modal request:', error);

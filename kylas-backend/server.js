@@ -156,85 +156,72 @@ app.get('/person-action-modal', async (req, res) => {
   data: {
     blocks: {
       person_name: {
-
         value: `**Name:** ${personData.name || 'N/A'}`,
         markdown: true
       },
       person_email: {
-     
         value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
         markdown: true
       },
       person_phone: {
-        
         value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
         markdown: true
       },
       person_organization: {
-        
         value: `**Organization:** ${personData.org_name || 'N/A'}`,
         markdown: true
       },
-
-      dialer_selection: {
-        
+      action_selection: {
         label: "Select Dialer",
-        placeholder: "Choose a dialer",
+        placeholder: "Select an action",
         isRequired: true,
         items: [
-          { label: "Welcome", value: "export_contact" },
-          { label: "Anmol Madan", value: "2" },
-          { label: "Kitaab Lovers", value: "3" },
-          { label: "Test", value: "4" }
+          { label: "Anmol Madan", value: "email_campaign" },
+          { label: "Welcome", value: "add_project" },
+          { label: "Kitablovers", value: "schedule_followup" },
+          { label: "Test", value: "export_contact" }
         ]
       },
-
-      timezone_selection: {
-        
-        label: "Select Timezone",
-        placeholder: "Choose a timezone",
+      project_selection: {
+        label: "Select Project",
+        placeholder: "Choose a project",
         isRequired: true,
+        
         items: [
-          { label: "Asia/Kolkata", value: "Asia/Kolkata" },
-          { label: "UTC", value: "UTC" },
-          { label: "America/New_York", value: "America/New_York" }
+          { label: "Q1 Marketing Campaign", value: "project_1" },
+          { label: "Product Launch", value: "project_2" },
+          { label: "Customer Onboarding", value: "project_3" }
         ]
       },
-
-      followup_datetime: {
+      followup_date: {
+        label: "Follow-up Date",
+        placeholder: "Select date",
+        message: "When should we follow up with this person?",
+        isRequired: true,
         
-        label: "Follow‑up Date & Time",
-        placeholder: "Select date and time",
-        datepickerType: "datetime",
-        isRequired: true
       },
-
       export_format: {
-        
         label: "Export Format",
         isRequired: true,
-        visibleOn: {
-          dialer_selection: {
-            equals: "export_contact"
-          }
-        },
+       },
         items: [
           { label: "CSV", value: "csv" },
           { label: "JSON", value: "json" },
           { label: "vCard", value: "vcard" }
         ]
+      },
+      person_info_header: {
+        value: "# Selected Person Information",
+        markdown: true
       }
     },
-
     actions: {
       cancel_action: {
-        type: "secondary",
         label: "Cancel",
         handler: "cancel"
       },
       submit_action: {
-        type: "primary",
-        label: "Schedule Follow-up",
+        label: "Execute Action",
         handler: "request"
       }
     }

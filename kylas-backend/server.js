@@ -151,81 +151,120 @@ app.get('/person-action-modal', async (req, res) => {
 
     const personData = await fetchPersonData(personIds[0]); // Only first person
 
-    res.json({
+    
+   res.json({
   data: {
     blocks: {
+      person_info_header: {
+        "$ref": "#/definitions/element-text",
+        options: {
+          value: "# Selected Person Information",
+          markdown: true
+        }
+      },
       person_name: {
-        value: `**Name:** ${personData.name || 'N/A'}`,
-        markdown: true
+        "$ref": "#/definitions/element-text",
+        options: {
+          value: `**Name:** ${personData.name || 'N/A'}`,
+          markdown: true
+        }
       },
       person_email: {
-        value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
-        markdown: true
+        "$ref": "#/definitions/element-text",
+        options: {
+          value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
+          markdown: true
+        }
       },
       person_phone: {
-        value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
-        markdown: true
+        "$ref": "#/definitions/element-text",
+        options: {
+          value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
+          markdown: true
+        }
       },
       person_organization: {
-        value: `**Organization:** ${personData.org_name || 'N/A'}`,
-        markdown: true
+        "$ref": "#/definitions/element-text",
+        options: {
+          value: `**Organization:** ${personData.org_name || 'N/A'}`,
+          markdown: true
+        }
       },
-      action_selection: {
-        label: "Select Dialer",
-        placeholder: "Select the Dialer",
-        isRequired: true,
-        items: [
-          { label: "Welcome", value: "1" },
-          { label: "Anmol Madan", value: "2" },
-          { label: "Kitaab Lovers", value: "3" },
-          { label: "Test", value: "4" }
-        ]
+
+      dialer_selection: {
+        "$ref": "#/definitions/element-select",
+        options: {
+          label: "Select Dialer",
+          placeholder: "Choose a dialer",
+          isRequired: true,
+          items: [
+            { label: "Welcome", value: "export_contact" },
+            { label: "Anmol Madan", value: "2" },
+            { label: "Kitaab Lovers", value: "3" },
+            { label: "Test", value: "4" }
+          ]
+        }
       },
-      action_selection: {
-        label: "Select Timezone",
-        placeholder: "Select the Timezone",
-        isRequired: true,
-        
-        items: [
-          { label: "Asia/Calcutta", value: "1" }
-        ]
+
+      timezone_selection: {
+        "$ref": "#/definitions/element-select",
+        options: {
+          label: "Select Timezone",
+          placeholder: "Choose a timezone",
+          isRequired: true,
+          items: [
+            { label: "Asia/Kolkata", value: "Asia/Kolkata" },
+            { label: "UTC", value: "UTC" },
+            { label: "America/New_York", value: "America/New_York" }
+          ]
+        }
       },
-      followup_date: {
-        label: "Follow-up Date",
-        placeholder: "Select date",
-        message: "When should we follow up with this person?",
-        isRequired: true,
-        
+
+      followup_datetime: {
+        "$ref": "#/definitions/element-datepicker",
+        options: {
+          label: "Follow‑up Date & Time",
+          placeholder: "Select date and time",
+          type: "datetime",
+          isRequired: true
+        }
       },
+
       export_format: {
-        label: "Export Format",
-        isRequired: true,
-        visibleOn: {
-          action_selection: { equals: "export_contact" }
-        },
-        items: [
-          { label: "CSV", value: "csv" },
-          { label: "JSON", value: "json" },
-          { label: "vCard", value: "vcard" }
-        ]
-      },
-      person_info_header: {
-        value: "# Selected Person Information",
-        markdown: true
+        "$ref": "#/definitions/element-select",
+        options: {
+          label: "Export Format",
+          isRequired: true,
+          visibleOn: {
+            dialer_selection: { equals: "export_contact" }
+          },
+          items: [
+            { label: "CSV", value: "csv" },
+            { label: "JSON", value: "json" },
+            { label: "vCard", value: "vcard" }
+          ]
+        }
       }
     },
     actions: {
       cancel_action: {
-        label: "Cancel",
-        handler: "cancel"
+        "$ref": "#/definitions/action-secondary",
+        options: {
+          label: "Cancel",
+          handler: "cancel"
+        }
       },
       submit_action: {
-        label: "Assign Dialer",
-        handler: "request"
+        "$ref": "#/definitions/action-primary",
+        options: {
+          label: "Schedule Follow-up",
+          handler: "request"
+        }
       }
     }
   }
 });
+
 
 
   } catch (error) {

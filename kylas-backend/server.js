@@ -151,8 +151,7 @@ app.get('/person-action-modal', async (req, res) => {
 
     const personData = await fetchPersonData(personIds[0]); // Only first person
 
-    
-   res.json({
+    res.json({
   data: {
     blocks: {
       person_name: {
@@ -186,7 +185,6 @@ app.get('/person-action-modal', async (req, res) => {
         label: "Select Project",
         placeholder: "Choose a project",
         isRequired: true,
-        
         items: [
           { label: "Q1 Marketing Campaign", value: "project_1" },
           { label: "Product Launch", value: "project_2" },
@@ -197,13 +195,11 @@ app.get('/person-action-modal', async (req, res) => {
         label: "Follow-up Date",
         placeholder: "Select date",
         message: "When should we follow up with this person?",
-        isRequired: true,
-        
+        isRequired: true
       },
       export_format: {
         label: "Export Format",
         isRequired: true,
-       },
         items: [
           { label: "CSV", value: "csv" },
           { label: "JSON", value: "json" },
@@ -228,6 +224,7 @@ app.get('/person-action-modal', async (req, res) => {
   }
 });
 
+   
 
 
   } catch (error) {

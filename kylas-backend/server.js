@@ -171,27 +171,23 @@ app.get('/person-action-modal', async (req, res) => {
         markdown: true
       },
       action_selection: {
-        label: "What would you like to do with this person?",
-        placeholder: "Select an action",
+        label: "Select Dialer",
+        placeholder: "Select the Dialer",
         isRequired: true,
         items: [
-          { label: "Send Email Campaign", value: "email_campaign" },
-          { label: "Add to Project", value: "add_project" },
-          { label: "Schedule Follow-up", value: "schedule_followup" },
-          { label: "Export Contact", value: "export_contact" }
+          { label: "Welcome", value: "1" },
+          { label: "Anmol Madan", value: "2" },
+          { label: "Kitaab Lovers", value: "3" },
+          { label: "Test", value: "4" }
         ]
       },
       project_selection: {
-        label: "Select Project",
-        placeholder: "Choose a project",
+        label: "Select Timezone",
+        placeholder: "Select the Timezone",
         isRequired: true,
-        visibleOn: {
-          action_selection: { equals: "add_project" }
-        },
+        
         items: [
-          { label: "Q1 Marketing Campaign", value: "project_1" },
-          { label: "Product Launch", value: "project_2" },
-          { label: "Customer Onboarding", value: "project_3" }
+          { label: "Asia/Calcutta", value: "1" }
         ]
       },
       followup_date: {
@@ -199,9 +195,7 @@ app.get('/person-action-modal', async (req, res) => {
         placeholder: "Select date",
         message: "When should we follow up with this person?",
         isRequired: true,
-        visibleOn: {
-          action_selection: { equals: "schedule_followup" }
-        }
+        
       },
       export_format: {
         label: "Export Format",
@@ -226,7 +220,7 @@ app.get('/person-action-modal', async (req, res) => {
         handler: "cancel"
       },
       submit_action: {
-        label: "Execute Action",
+        label: "Assign Dialer",
         handler: "request"
       }
     }

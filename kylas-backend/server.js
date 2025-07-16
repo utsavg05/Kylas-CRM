@@ -185,9 +185,6 @@ app.get('/person-action-modal', async (req, res) => {
         label: "Select Project",
         placeholder: "Choose a project",
         isRequired: true,
-        visibleOn: {
-          action_selection: { equals: "add_project" }
-        },
         items: [
           { label: "Q1 Marketing Campaign", value: "project_1" },
           { label: "Product Launch", value: "project_2" },
@@ -199,22 +196,9 @@ app.get('/person-action-modal', async (req, res) => {
         placeholder: "Select date",
         message: "When should we follow up with this person?",
         isRequired: true,
-        visibleOn: {
-          action_selection: { equals: "schedule_followup" }
-        }
+       
       },
-      export_format: {
-        label: "Export Format",
-        isRequired: true,
-        visibleOn: {
-          action_selection: { equals: "export_contact" }
-        },
-        items: [
-          { label: "CSV", value: "csv" },
-          { label: "JSON", value: "json" },
-          { label: "vCard", value: "vcard" }
-        ]
-      },
+
       person_info_header: {
         value: "# Selected Person Information",
         markdown: true

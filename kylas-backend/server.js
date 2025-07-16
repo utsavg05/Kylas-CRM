@@ -148,28 +148,25 @@ app.get('/person-action-modal', async (req, res) => {
         error: { message: "No person selected" }
       });
     }
+    res.json({
+  data: {
+    blocks: {
+      action_selection: null,
+      project_selection: null,
+      followup_date: null
+    },
+    actions: {
+      cancel_action: {},
+      submit_action: {}
+    }
+  }
+});
+
 
    
 
-    res.json({
-      data: {
-        blocks: {
-          action_selection: {
-            selected: "email_campaign" // valid value from structure.json
-          },
-          project_selection: {
-            selected: "project_1" // valid project
-          },
-          followup_date: {
-            value: "2025-07-20" // valid ISO date
-          }
-        },
-        actions: {
-          cancel_action: {},
-          submit_action: {}
-        }
-      }
-    });
+    
+   
 
   } catch (error) {
     console.error('Error handling modal request:', error);

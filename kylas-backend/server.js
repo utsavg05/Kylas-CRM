@@ -149,79 +149,27 @@ app.get('/person-action-modal', async (req, res) => {
       });
     }
 
-    const personData = await fetchPersonData(personIds[0]); // Only first person
+   
 
     res.json({
-  data: {
-    blocks: {
-      person_name: {
-        value: `**Name:** ${personData.name || 'N/A'}`,
-        markdown: true
-      },
-      person_email: {
-        value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
-        markdown: true
-      },
-      person_phone: {
-        value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
-        markdown: true
-      },
-      person_organization: {
-        value: `**Organization:** ${personData.org_name || 'N/A'}`,
-        markdown: true
-      },
-      action_selection: {
-        label: "What would you like to do with this person?",
-        placeholder: "Select an action",
-        isRequired: true,
-        items: [
-          { label: "Send Email Campaign", value: "email_campaign" },
-          { label: "Add to Project", value: "add_project" },
-          { label: "Schedule Follow-up", value: "schedule_followup" },
-          { label: "Export Contact", value: "export_contact" }
-        ]
-      },
-      project_selection: {
-        label: "Select Project",
-        placeholder: "Choose a project",
-        isRequired: true,
-        items: [
-          { label: "Q1 Marketing Campaign", value: "project_1" },
-          { label: "Product Launch", value: "project_2" },
-          { label: "Customer Onboarding", value: "project_3" }
-        ]
-      },
-      block_key_datepicker:{
-                    "$ref":"#/definitions/element-datepicker",
-                    "options":{
-                        "label":"Delivery date",
-                        "value":"2021-03-17",
-                        "message":"Cakes will be ready by 12:00 on selected date",
-                        "placeholder":"Date",
-                        "allowClear":true,
-                        "isRequired":true,
-                        "fetchOnChange":true
-                    }
-                },
-
-      person_info_header: {
-        value: "# Selected Person Information",
-        markdown: true
+      data: {
+        blocks: {
+          action_selection: {
+            selected: "email_campaign" // valid value from structure.json
+          },
+          project_selection: {
+            selected: "project_1" // valid project
+          },
+          followup_date: {
+            value: "2025-07-20" // valid ISO date
+          }
+        },
+        actions: {
+          cancel_action: {},
+          submit_action: {}
+        }
       }
-    },
-    actions: {
-      cancel_action: {
-        label: "Cancel",
-        handler: "cancel"
-      },
-      submit_action: {
-        label: "Execute Action",
-        handler: "request"
-      }
-    }
-  }
-});
-
+    });
 
   } catch (error) {
     console.error('Error handling modal request:', error);
@@ -231,33 +179,6 @@ app.get('/person-action-modal', async (req, res) => {
   }
 });
 
-// ✅ TEST DATA
-async function fetchPersonData(personId) {
-  const testPersons = {
-    '288': {
-      id: '288',
-      name: 'Sarah Johnson',
-      email: [{ value: 'sarah.johnson@techcorp.com', primary: true }],
-      phone: [{ value: '+1-555-0198', primary: true }],
-      org_name: 'TechCorp Solutions'
-    },
-    '289': {
-      id: '289',
-      name: 'Michael Chen',
-      email: [{ value: 'michael.chen@innovate.com', primary: true }],
-      phone: [{ value: '+1-555-0287', primary: true }],
-      org_name: 'Innovate Industries'
-    }
-  };
-
-  return testPersons[personId] || {
-    id: personId,
-    name: `Test Person ${personId}`,
-    email: [{ value: `person${personId}@example.com`, primary: true }],
-    phone: [{ value: `+1-555-${personId.padStart(4, '0')}`, primary: true }],
-    org_name: `Company ${personId}`
-  };
-}
 app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));
 app.get("/{*any}", (req, res) => {
   res.sendFile(path.join(__dirname, '../kylas-frontend/dist/index.html'));

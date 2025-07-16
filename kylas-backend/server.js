@@ -156,28 +156,28 @@ app.get('/person-action-modal', async (req, res) => {
   data: {
     blocks: {
       person_name: {
-        type: "text",
+
         value: `**Name:** ${personData.name || 'N/A'}`,
         markdown: true
       },
       person_email: {
-        type: "text",
+     
         value: `**Email:** ${personData.email?.[0]?.value || 'N/A'}`,
         markdown: true
       },
       person_phone: {
-        type: "text",
+        
         value: `**Phone:** ${personData.phone?.[0]?.value || 'N/A'}`,
         markdown: true
       },
       person_organization: {
-        type: "text",
+        
         value: `**Organization:** ${personData.org_name || 'N/A'}`,
         markdown: true
       },
 
       dialer_selection: {
-        type: "select",
+        
         label: "Select Dialer",
         placeholder: "Choose a dialer",
         isRequired: true,
@@ -190,7 +190,7 @@ app.get('/person-action-modal', async (req, res) => {
       },
 
       timezone_selection: {
-        type: "select",
+        
         label: "Select Timezone",
         placeholder: "Choose a timezone",
         isRequired: true,
@@ -202,7 +202,7 @@ app.get('/person-action-modal', async (req, res) => {
       },
 
       followup_datetime: {
-        type: "datepicker",
+        
         label: "Follow‑up Date & Time",
         placeholder: "Select date and time",
         datepickerType: "datetime",
@@ -210,7 +210,7 @@ app.get('/person-action-modal', async (req, res) => {
       },
 
       export_format: {
-        type: "select",
+        
         label: "Export Format",
         isRequired: true,
         visibleOn: {

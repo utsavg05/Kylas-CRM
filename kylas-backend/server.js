@@ -150,111 +150,152 @@ app.get('/person-action-modal', async (req, res) => {
     }
 
     const personData = await fetchPersonData(personIds[0]); // Only first person
-res.json({
+{
   "data": {
     "blocks": {
       "person_info_header": {
-        "value": "# Selected Person Information",
-        "markdown": true
+        "$ref": "#/definitions/element-text",
+        "options": {
+          "value": "# Selected Person Information",
+          "markdown": true
+        }
       },
       "person_name": {
-        "value": "**Name:** John Doe",
-        "markdown": true
+        "$ref": "#/definitions/element-text",
+        "options": {
+          "value": "**Name:** John Doe",
+          "markdown": true
+        }
       },
       "person_email": {
-        "value": "**Email:** john.doe@example.com",
-        "markdown": true
+        "$ref": "#/definitions/element-text",
+        "options": {
+          "value": "**Email:** john.doe@example.com",
+          "markdown": true
+        }
       },
       "person_phone": {
-        "value": "**Phone:** +1-555-123-4567",
-        "markdown": true
+        "$ref": "#/definitions/element-text",
+        "options": {
+          "value": "**Phone:** +1-555-123-4567",
+          "markdown": true
+        }
       },
       "person_organization": {
-        "value": "**Organization:** Acme Corp",
-        "markdown": true
+        "$ref": "#/definitions/element-text",
+        "options": {
+          "value": "**Organization:** Acme Corp",
+          "markdown": true
+        }
       },
-      "separator_1": {},
+      "separator_1": {
+        "$ref": "#/definitions/element-separator"
+      },
       "action_selection": {
-        "label": "Select Dialer",
-        "placeholder": "Select an action",
-        "isRequired": true,
-        "items": [
-          { "label": "Anmol Madan", "value": "anmol_madan" },
-          { "label": "Welcome", "value": "welcome" },
-          { "label": "Kitablovers", "value": "kitablovers" },
-          { "label": "Test", "value": "test" }
-        ]
+        "$ref": "#/definitions/element-select",
+        "options": {
+          "label": "Select Dialer",
+          "placeholder": "Select an action",
+          "isRequired": true,
+          "items": [
+            { "label": "Anmol Madan", "value": "anmol_madan" },
+            { "label": "Welcome", "value": "welcome" },
+            { "label": "Kitablovers", "value": "kitablovers" },
+            { "label": "Test", "value": "test" }
+          ]
+        }
       },
       "schedule_datetime": {
-        "label": "Schedule Date & Time",
-        "placeholder": "Select date and time",
-        "message": "When should this person be assigned to the dialer?",
-        "isRequired": true,
-        "visibleOn": {
-          "action_selection": "not_empty"
+        "$ref": "#/definitions/element-datepicker",
+        "options": {
+          "label": "Schedule Date & Time",
+          "placeholder": "Select date and time",
+          "message": "When should this person be assigned to the dialer?",
+          "isRequired": true,
+          "visibleOn": {
+            "action_selection": "not_empty"
+          }
         }
       },
       "timezone_select": {
-        "label": "Select Timezone",
-        "placeholder": "Choose timezone",
-        "isRequired": true,
-        "items": [
-          { "label": "UTC", "value": "UTC" },
-          { "label": "Asia/Kolkata", "value": "Asia/Kolkata" },
-          { "label": "America/New_York", "value": "America/New_York" },
-          { "label": "Europe/London", "value": "Europe/London" }
-        ],
-        "visibleOn": {
-          "action_selection": "not_empty"
+        "$ref": "#/definitions/element-select",
+        "options": {
+          "label": "Select Timezone",
+          "placeholder": "Choose timezone",
+          "isRequired": true,
+          "items": [
+            { "label": "UTC", "value": "UTC" },
+            { "label": "Asia/Kolkata", "value": "Asia/Kolkata" },
+            { "label": "America/New_York", "value": "America/New_York" },
+            { "label": "Europe/London", "value": "Europe/London" }
+          ],
+          "visibleOn": {
+            "action_selection": "not_empty"
+          }
         }
       },
       "project_selection": {
-        "label": "Select Project",
-        "placeholder": "Choose a project",
-        "isRequired": true,
-        "items": [
-          { "label": "Q1 Marketing Campaign", "value": "project_1" },
-          { "label": "Product Launch", "value": "project_2" },
-          { "label": "Customer Onboarding", "value": "project_3" }
-        ],
-        "visibleOn": {
-          "action_selection": { "equals": "anmol_madan" }
+        "$ref": "#/definitions/element-select",
+        "options": {
+          "label": "Select Project",
+          "placeholder": "Choose a project",
+          "isRequired": true,
+          "items": [
+            { "label": "Q1 Marketing Campaign", "value": "project_1" },
+            { "label": "Product Launch", "value": "project_2" },
+            { "label": "Customer Onboarding", "value": "project_3" }
+          ],
+          "visibleOn": {
+            "action_selection": { "equals": "anmol_madan" }
+          }
         }
       },
       "followup_date": {
-        "label": "Follow-up Date",
-        "placeholder": "Select date",
-        "message": "When should we follow up with this person?",
-        "isRequired": true,
-        "visibleOn": {
-          "action_selection": { "equals": "welcome" }
+        "$ref": "#/definitions/element-datepicker",
+        "options": {
+          "label": "Follow-up Date",
+          "placeholder": "Select date",
+          "message": "When should we follow up with this person?",
+          "isRequired": true,
+          "visibleOn": {
+            "action_selection": { "equals": "welcome" }
+          }
         }
       },
       "export_format": {
-        "label": "Export Format",
-        "isRequired": true,
-        "items": [
-          { "label": "CSV", "value": "csv" },
-          { "label": "JSON", "value": "json" },
-          { "label": "vCard", "value": "vcard" }
-        ],
-        "visibleOn": {
-          "action_selection": { "equals": "test" }
+        "$ref": "#/definitions/element-radio-group",
+        "options": {
+          "label": "Export Format",
+          "isRequired": true,
+          "items": [
+            { "label": "CSV", "value": "csv" },
+            { "label": "JSON", "value": "json" },
+            { "label": "vCard", "value": "vcard" }
+          ],
+          "visibleOn": {
+            "action_selection": { "equals": "test" }
+          }
         }
       }
     },
     "actions": {
       "cancel_action": {
-        "label": "Cancel",
-        "handler": "cancel"
+        "$ref": "#/definitions/action-secondary",
+        "options": {
+          "label": "Cancel",
+          "handler": "cancel"
+        }
       },
       "submit_action": {
-        "label": "Execute Action",
-        "handler": "request"
+        "$ref": "#/definitions/action-primary",
+        "options": {
+          "label": "Execute Action",
+          "handler": "request"
+        }
       }
     }
   }
-})
+}
    
 
 

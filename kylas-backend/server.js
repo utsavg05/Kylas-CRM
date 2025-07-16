@@ -150,152 +150,77 @@ app.get('/person-action-modal', async (req, res) => {
     }
 
     const personData = await fetchPersonData(personIds[0]); // Only first person
-{
-  "data": {
+
+   res.json( {"data": {
+    "title": "Assign Leads to Dialer",
     "blocks": {
-      "person_info_header": {
-        "$ref": "#/definitions/element-text",
-        "options": {
-          "value": "# Selected Person Information",
-          "markdown": true
-        }
-      },
-      "person_name": {
-        "$ref": "#/definitions/element-text",
-        "options": {
-          "value": "**Name:** John Doe",
-          "markdown": true
-        }
-      },
-      "person_email": {
-        "$ref": "#/definitions/element-text",
-        "options": {
-          "value": "**Email:** john.doe@example.com",
-          "markdown": true
-        }
-      },
-      "person_phone": {
-        "$ref": "#/definitions/element-text",
-        "options": {
-          "value": "**Phone:** +1-555-123-4567",
-          "markdown": true
-        }
-      },
-      "person_organization": {
-        "$ref": "#/definitions/element-text",
-        "options": {
-          "value": "**Organization:** Acme Corp",
-          "markdown": true
-        }
-      },
-      "separator_1": {
-        "$ref": "#/definitions/element-separator"
-      },
-      "action_selection": {
-        "$ref": "#/definitions/element-select",
-        "options": {
-          "label": "Select Dialer",
-          "placeholder": "Select an action",
-          "isRequired": true,
-          "items": [
-            { "label": "Anmol Madan", "value": "anmol_madan" },
-            { "label": "Welcome", "value": "welcome" },
-            { "label": "Kitablovers", "value": "kitablovers" },
-            { "label": "Test", "value": "test" }
-          ]
-        }
-      },
-      "schedule_datetime": {
-        "$ref": "#/definitions/element-datepicker",
-        "options": {
-          "label": "Schedule Date & Time",
-          "placeholder": "Select date and time",
-          "message": "When should this person be assigned to the dialer?",
-          "isRequired": true,
-          "visibleOn": {
-            "action_selection": "not_empty"
+      "dialer_selection": {
+        "type": "select",
+        "label": "Select Dialer",
+        "placeholder": "Select a dialer",
+        "isRequired": true,
+        "items": [
+          {
+            "label": "Anmol Madan (Active)",
+            "value": "anmol_madan_active"
+          },
+          {
+            "label": "Another Dialer",
+            "value": "another_dialer"
           }
-        }
+        ]
       },
-      "timezone_select": {
-        "$ref": "#/definitions/element-select",
-        "options": {
-          "label": "Select Timezone",
-          "placeholder": "Choose timezone",
-          "isRequired": true,
-          "items": [
-            { "label": "UTC", "value": "UTC" },
-            { "label": "Asia/Kolkata", "value": "Asia/Kolkata" },
-            { "label": "America/New_York", "value": "America/New_York" },
-            { "label": "Europe/London", "value": "Europe/London" }
-          ],
-          "visibleOn": {
-            "action_selection": "not_empty"
-          }
-        }
+      "schedule_datetime_picker": {
+        "type": "datepicker",
+        "label": "Schedule Date & Time",
+        "placeholder": "dd-mm-yyyy --:--",
+        "hasTime": true,
+        "isRequired": true
       },
-      "project_selection": {
-        "$ref": "#/definitions/element-select",
-        "options": {
-          "label": "Select Project",
-          "placeholder": "Choose a project",
-          "isRequired": true,
-          "items": [
-            { "label": "Q1 Marketing Campaign", "value": "project_1" },
-            { "label": "Product Launch", "value": "project_2" },
-            { "label": "Customer Onboarding", "value": "project_3" }
-          ],
-          "visibleOn": {
-            "action_selection": { "equals": "anmol_madan" }
+      "timezone_selection": {
+        "type": "select",
+        "label": "Select Timezone",
+        "placeholder": "-- Select Timezone --",
+        "isRequired": true,
+        "items": [
+          {
+            "label": "UTC",
+            "value": "UTC"
+          },
+          {
+            "label": "Asia/Kolkata",
+            "value": "Asia/Kolkata"
+          },
+          {
+            "label": "America/New_York",
+            "value": "America/New_York"
+          },
+          {
+            "label": "Europe/London",
+            "value": "Europe/London"
           }
-        }
+        ]
       },
-      "followup_date": {
-        "$ref": "#/definitions/element-datepicker",
-        "options": {
-          "label": "Follow-up Date",
-          "placeholder": "Select date",
-          "message": "When should we follow up with this person?",
-          "isRequired": true,
-          "visibleOn": {
-            "action_selection": { "equals": "welcome" }
-          }
-        }
-      },
-      "export_format": {
-        "$ref": "#/definitions/element-radio-group",
-        "options": {
-          "label": "Export Format",
-          "isRequired": true,
-          "items": [
-            { "label": "CSV", "value": "csv" },
-            { "label": "JSON", "value": "json" },
-            { "label": "vCard", "value": "vcard" }
-          ],
-          "visibleOn": {
-            "action_selection": { "equals": "test" }
-          }
-        }
+      "selected_numbers_display": {
+        "type": "text",
+        "label": "Selected Numbers",
+        "value": "Waiting for selection...",
+        "readOnly": true
       }
     },
     "actions": {
       "cancel_action": {
-        "$ref": "#/definitions/action-secondary",
-        "options": {
-          "label": "Cancel",
-          "handler": "cancel"
-        }
+        "label": "Cancel",
+        "handler": "cancel"
       },
-      "submit_action": {
-        "$ref": "#/definitions/action-primary",
-        "options": {
-          "label": "Execute Action",
-          "handler": "request"
-        }
+      "assign_to_dialer_action": {
+        "label": "Assign to Dialer",
+        "handler": "request",
+        "primary": true
       }
     }
   }
-}
+})
    
 
 

@@ -148,25 +148,33 @@ app.get('/person-action-modal', async (req, res) => {
         error: { message: "No person selected" }
       });
     }
+
+    // Optional: You can fetch data for dynamic population if needed
+    // const personData = await fetchPersonData(personIds[0]);
+
+    // ✅ Send modal config response
     res.json({
-  data: {
-    blocks: {
-      action_selection: null,
-      project_selection: null,
-      followup_date: null
-    },
-    actions: {
-      cancel_action: {},
-      submit_action: {}
-    }
-  }
-});
-
-
-   
-
-    
-   
+      data: {
+        blocks: {
+          action_selection: {
+            items: [
+              { label: "Anmol Madan", value: "anmol_madan" },
+              { label: "Welcome", value: "welcome" },
+              { label: "KitaabLovers", value: "kitaablovers" },
+              { label: "Test Dialer", value: "test_dialer" },
+              { label: "New Dialer A", value: "dialer_a" },
+              { label: "New Dialer B", value: "dialer_b" }
+            ]
+          },
+          project_selection: {},
+          followup_date: {}
+        },
+        actions: {
+          cancel_action: {},
+          submit_action: {}
+        }
+      }
+    });
 
   } catch (error) {
     console.error('Error handling modal request:', error);
@@ -175,6 +183,7 @@ app.get('/person-action-modal', async (req, res) => {
     });
   }
 });
+
 
 app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));
 app.get("/{*any}", (req, res) => {

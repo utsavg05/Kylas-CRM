@@ -151,78 +151,91 @@ app.get('/person-action-modal', async (req, res) => {
 
     const personData = await fetchPersonData(personIds[0]); // Only first person
 
-   res.json( {"data": {
+   {
+  "data": {
     "title": "Assign Leads to Dialer",
     "blocks": {
       "dialer_selection": {
-        "type": "select",
-        "label": "Select Dialer",
-        "placeholder": "Select a dialer",
-        "isRequired": true,
-        "items": [
-          {
-            "label": "Anmol Madan (Active)",
-            "value": "anmol_madan_active"
-          },
-          {
-            "label": "Another Dialer",
-            "value": "another_dialer"
-          }
-        ]
+        "$ref": "#/definitions/element-select",
+        "options": {
+          "label": "Select Dialer",
+          "placeholder": "Select a dialer",
+          "isRequired": true,
+          "items": [
+            {
+              "label": "Anmol Madan (Active)",
+              "value": "anmol_madan_active"
+            },
+            {
+              "label": "Another Dialer",
+              "value": "another_dialer"
+            }
+          ]
+        }
       },
       "schedule_datetime_picker": {
-        "type": "datepicker",
-        "label": "Schedule Date & Time",
-        "placeholder": "dd-mm-yyyy --:--",
-        "hasTime": true,
-        "isRequired": true
+        "$ref": "#/definitions/element-datepicker",
+        "options": {
+          "label": "Schedule Date & Time",
+          "placeholder": "dd-mm-yyyy --:--",
+          "hasTime": true,
+          "isRequired": true
+        }
       },
       "timezone_selection": {
-        "type": "select",
-        "label": "Select Timezone",
-        "placeholder": "-- Select Timezone --",
-        "isRequired": true,
-        "items": [
-          {
-            "label": "UTC",
-            "value": "UTC"
-          },
-          {
-            "label": "Asia/Kolkata",
-            "value": "Asia/Kolkata"
-          },
-          {
-            "label": "America/New_York",
-            "value": "America/New_York"
-          },
-          {
-            "label": "Europe/London",
-            "value": "Europe/London"
-          }
-        ]
+        "$ref": "#/definitions/element-select",
+        "options": {
+          "label": "Select Timezone",
+          "placeholder": "-- Select Timezone --",
+          "isRequired": true,
+          "items": [
+            {
+              "label": "UTC",
+              "value": "UTC"
+            },
+            {
+              "label": "Asia/Kolkata",
+              "value": "Asia/Kolkata"
+            },
+            {
+              "label": "America/New_York",
+              "value": "America/New_York"
+            },
+            {
+              "label": "Europe/London",
+              "value": "Europe/London"
+            }
+          ]
+        }
       },
       "selected_numbers_display": {
-        "type": "text",
-        "label": "Selected Numbers",
-        "value": "Waiting for selection...",
-        "readOnly": true
+        "$ref": "#/definitions/element-input",
+        "options": {
+          "type": "text",
+          "label": "Selected Numbers",
+          "value": "Waiting for selection...",
+          "readOnly": true
+        }
       }
     },
     "actions": {
       "cancel_action": {
-        "label": "Cancel",
-        "handler": "cancel"
+        "$ref": "#/definitions/action-secondary",
+        "options": {
+          "label": "Cancel",
+          "handler": "cancel"
+        }
       },
       "assign_to_dialer_action": {
-        "label": "Assign to Dialer",
-        "handler": "request",
-        "primary": true
+        "$ref": "#/definitions/action-primary",
+        "options": {
+          "label": "Assign to Dialer",
+          "handler": "request"
+        }
       }
     }
   }
-})
-   
-
+}
 
   } catch (error) {
     console.error('Error handling modal request:', error);

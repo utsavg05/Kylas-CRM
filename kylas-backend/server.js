@@ -275,7 +275,7 @@ app.post('/person-action-modal', async (req, res) => {
     };
 
     if (followup_date && timezone) {
-      payload.schedule_datetime = `${followup_date} 10:00:00`;
+      payload.schedule_datetime = `${followup_date} 15:50:00`;
       payload.timezone = timezone;
     }
 

@@ -213,14 +213,12 @@ app.get('/person-action-modal', async (req, res) => {
 //   });
 // });
 
-// Utility function to extract phone numbers
 const extractPhoneNumbers = (person) => {
   return (person.phone || [])
     .map(p => p.value)
     .filter(Boolean);
 };
 
-// Your endpoint
 app.post('/person-action-modal', async (req, res) => {
   try {
     console.log("🟢 Received from modal:", req.body);
@@ -235,29 +233,45 @@ app.post('/person-action-modal', async (req, res) => {
     const {
       selectedIds = '',
       companyId,
-     
     } = req.query;
 
-   
-
     const personIds = selectedIds.split(',').map(id => id.trim());
-    const domain = 'abhishek-sandbox3.pipedrive.com'; // Make this dynamic per your use case
+    console.log(personIds)
+    const domain = 'abhishek-sandbox3.pipedrive.com'; // Make dynamic if needed
+    
     const phoneNumbers = [];
 
-    // 🔁 Loop through each person and fetch phone numbers
+    // 🔁 Fetch phone numbers for each person
     for (const personId of personIds) {
       const url = `https://${domain}/api/v1/persons/${personId}`;
-      const { data } = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer v1u:AQIBAHj-LzTNK2yuuuaLqifzhWb9crUNKTpk4FlQ9rjnXqp_6AH1xWIuX4UNV4pLjxXmWX9qAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMFHdktw7w7f0Pjg7rAgEQgDvdZiq5D_z3NrqUDbPJtST4-2TOMCW6wX9bysOeNz1dnXk2iat6N4tJCtsyTenFd4dHuS53Kg7r436P0Q:73UXBKQBUxhNamj1WAZ2fyYnwqHr5q7guI3b4xsLQsLQ0WXXkm6NtGL9vg3hTnclN1ff4w_sl046wrcy6ldZt_VntWU7izFrMzboGbD680uxndPDdZTXD_8jWGI9G1guMlSsQkjpf8rzDMmCJyse3mGFP17h6gPHjR92jiiKgJrRxpDSZITGDj9kLPflIjdh-ulGPuLTW7GFNot-B_zG8-60zTK3GqMuo0x_xy9wQF0XBUbtTLPpN0PAFqLsHEx22v5Ss4U14T1vNJtX9RkvBjbAhQjs-Yi70auU1l6EqUogFGv0yjRxYmqI3dxNvXdzcs_gXzLrTsTYq9gClce1OO4_WDlgFPO1JRDxCktMXxzB08hVwMtfjTxyygzzx6WmPoDrWha6xzVjFiBLjwddpjWmf7AoxVi6gtrL4Ql9TtUVN4Us` // Use passed token from query
-        }
-      });
 
-      if (data?.data) {
-        const numbers = extractPhoneNumbers(data.data);
-        numbers.forEach(num => {
-          phoneNumbers.push({ phone_number: num });
+      try {
+        const { data: person } = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer v1u:AQIBAHj-LzTNK2yuuuaLqifzhWb9crUNKTpk4FlQ9rjnXqp_6AH1xWIuX4UNV4pLjxXmWX9qAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMFHdktw7w7f0Pjg7rAgEQgDvdZiq5D_z3NrqUDbPJtST4-2TOMCW6wX9bysOeNz1dnXk2iat6N4tJCtsyTenFd4dHuS53Kg7r436P0Q:73UXBKQBUxhNamj1WAZ2fyYnwqHr5q7guI3b4xsLQsLQ0WXXkm6NtGL9vg3hTnclN1ff4w_sl046wrcy6ldZt_VntWU7izFrMzboGbD680uxndPDdZTXD_8jWGI9G1guMlSsQkjpf8rzDMmCJyse3mGFP17h6gPHjR92jiiKgJrRxpDSZITGDj9kLPflIjdh-ulGPuLTW7GFNot-B_zG8-60zTK3GqMuo0x_xy9wQF0XBUbtTLPpN0PAFqLsHEx22v5Ss4U14T1vNJtX9RkvBjbAhQjs-Yi70auU1l6EqUogFGv0yjRxYmqI3dxNvXdzcs_gXzLrTsTYq9gClce1OO4_WDlgFPO1JRDxCktMXxzB08hVwMtfjTxyygzzx6WmPoDrWha6xzVjFiBLjwddpjWmf7AoxVi6gtrL4Ql9TtUVN4Us`
+          }
         });
+
+        const personData = person?.data;
+        const phones = personData?.phone;
+
+        if (!Array.isArray(phones)) {
+          console.warn(`⚠️ No phone array for personId ${personId}`);
+          continue;
+        }
+
+        phones.forEach(entry => {
+          const num = entry?.value;
+          if (num) {
+            phoneNumbers.push({ phone_number: num });
+          }
+        });
+
+        console.log( phoneNumbers)
+
+      } catch (err) {
+        console.error(`❌ Failed to fetch personId ${personId}:`, err.response?.status, err.message);
+        continue; // Skip this person and continue the loop
       }
     }
 
@@ -268,18 +282,20 @@ app.post('/person-action-modal', async (req, res) => {
       });
     }
 
-    // 📦 Construct dialer payload
+    // 📦 Dialer payload
     const payload = {
       dialerid: dialerId,
       recordList: phoneNumbers
     };
 
     if (followup_date && timezone) {
-      payload.schedule_datetime = `${followup_date} 15:50:00`;
+      payload.schedule_datetime = `${followup_date} 16:25:00`;
       payload.timezone = timezone;
     }
 
-    // 📤 Send to dialer
+    console.log("📤 Final Payload to be sent:", payload);
+
+    // 📤 Send to Dialer
     const dialerResponse = await axios.post(
       'https://api.ivrsolutions.in/v1/add_to_dialer',
       payload,
@@ -291,10 +307,8 @@ app.post('/person-action-modal', async (req, res) => {
       }
     );
 
-    console.log("📤 Sent to dialer:", payload);
     console.log("✅ Dialer response:", dialerResponse.data);
 
-    // ✅ Pipedrive expects this format
     return res.json({
       success: {
         message: "Action received and processed."
@@ -302,7 +316,7 @@ app.post('/person-action-modal', async (req, res) => {
     });
 
   } catch (error) {
-    console.error("❌ Error in /person-action-modal:", error);
+    console.error("❌ Fatal error in /person-action-modal:", error.message);
     return res.status(500).json({
       success: false,
       message: "Failed to add to dialer.",
@@ -310,6 +324,7 @@ app.post('/person-action-modal', async (req, res) => {
     });
   }
 });
+
 
 
 

@@ -289,7 +289,7 @@ app.post('/person-action-modal', async (req, res) => {
     };
 
     if (followup_date && timezone) {
-      payload.schedule_datetime = `${followup_date} 16:25:00`;
+      payload.schedule_datetime = `${followup_date} 16:45:00`;
       payload.timezone = timezone;
     }
 
@@ -302,7 +302,7 @@ app.post('/person-action-modal', async (req, res) => {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.DIALER_API_KEY}`
+          Authorization: `Bearer 9d9e342f9478836c02171cbcf68d0c7b`
         }
       }
     );

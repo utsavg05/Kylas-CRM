@@ -201,7 +201,7 @@ app.get('/person-action-modal', async (req, res) => {
     });
   }
 });
-
+//post request todo
 
 app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));
 app.get("/{*any}", (req, res) => {

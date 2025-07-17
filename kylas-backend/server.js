@@ -204,13 +204,15 @@ app.get('/person-action-modal', async (req, res) => {
 //post request todo here
 app.post('/person-action-modal', async (req, res) => {
   console.log("🟢 Received from modal:", req.body);
-  console.log(req.query)
+  console.log("🟡 Query params:", req.query);
 
   res.json({
-    success: true,
-    message: "Action received and processed.",
+    success: {
+      message: "Action received and processed."
+    }
   });
 });
+
 
 
 app.use(express.static(path.join(__dirname, '../kylas-frontend/dist')));

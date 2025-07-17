@@ -148,43 +148,41 @@ app.get('/person-action-modal', async (req, res) => {
         error: { message: "No person selected" }
       });
     }
-    
-    function fetchDialers() {
-  fetch('https://api.ivrsolutions.in/api/get_dialers_list', {
-    method: 'GET',
-    headers: {
-      'Authorization': 'Bearer ' + '9d9e342f9478836c02171cbcf68d0c7b',
-      'Content-Type': 'application/json'
+
+    const itemsdata = [];
+
+    // ✅ Async function to fetch dialers and return list
+    async function fetchDialers() {
+      const response = await fetch('https://api.ivrsolutions.in/api/get_dialers_list', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer 9d9e342f9478836c02171cbcf68d0c7b',
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const dialers = await response.json();
+      if (!dialers.data) {
+        throw new Error("No dialer data found");
+      }
+
+      dialers.data.forEach(item => {
+        itemsdata.push({
+          label: `${item.name} (${item.status})`,
+          value: item.id
+        });
+      });
     }
-  })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Dialers:', data);
-    })
-    .catch(error => {
-      console.error('Error fetching dialers:', error);
-    });
-}
-    fetchDialers();
 
-    
+    // ⏳ Wait for dialer fetch to finish before responding
+    await fetchDialers();
 
-    // Optional: You can fetch data for dynamic population if needed
-    // const personData = await fetchPersonData(personIds[0]);
-
-    // ✅ Send modal config response
+    // ✅ Now return the modal structure
     res.json({
       data: {
         blocks: {
           action_selection: {
-            items: [
-              { label: "Anmol Madan", value: "anmol_madan" },
-              { label: "Welcome", value: "welcome" },
-              { label: "KitaabLovers", value: "kitaablovers" },
-              { label: "Test Dialer", value: "test_dialer" },
-              { label: "New Dialer A", value: "dialer_a" },
-              { label: "New Dialer B", value: "dialer_b" }
-            ]
+            items: itemsdata
           },
           project_selection: {},
           followup_date: {}

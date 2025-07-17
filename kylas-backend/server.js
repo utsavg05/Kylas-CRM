@@ -148,6 +148,26 @@ app.get('/person-action-modal', async (req, res) => {
         error: { message: "No person selected" }
       });
     }
+    
+    function fetchDialers() {
+  fetch('https://api.ivrsolutions.in/api/get_dialers_list', {
+    method: 'GET',
+    headers: {
+      'Authorization': 'Bearer ' + '9d9e342f9478836c02171cbcf68d0c7b',
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Dialers:', data);
+    })
+    .catch(error => {
+      console.error('Error fetching dialers:', error);
+    });
+}
+    fetchDialers();
+
+    
 
     // Optional: You can fetch data for dynamic population if needed
     // const personData = await fetchPersonData(personIds[0]);

@@ -292,7 +292,7 @@ console.log(time)
     };
 
     if (followup_date && timezone) {
-      payload.schedule_datetime = `${followup_date} ${time}`;
+      payload.schedule_datetime = `${followup_date} ${time}:00`;
       payload.timezone = timezone;
     }
 

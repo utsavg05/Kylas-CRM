@@ -227,8 +227,11 @@ app.post('/person-action-modal', async (req, res) => {
     const {
       action_selection: dialerId,
       followup_date,
-      project_selection: timezone
+      project_selection: timezone,
+      followup_time_text:time
     } = req.body;
+
+console.log(time)
 
     const {
       selectedIds = '',
@@ -289,7 +292,7 @@ app.post('/person-action-modal', async (req, res) => {
     };
 
     if (followup_date && timezone) {
-      payload.schedule_datetime = `${followup_date} 17:00:00`;
+      payload.schedule_datetime = `${followup_date} ${time}`;
       payload.timezone = timezone;
     }
 

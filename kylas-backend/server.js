@@ -143,24 +143,6 @@ app.get('/person-action-modal', async (req, res) => {
 
     console.log('Selected Person IDs:', personIds);
 
-    if (personIds.length === 0) {
-         res.json({
-      data: {
-        blocks: {
-          action_selection: {
-            items: itemsdata
-          },
-          project_selection: {},
-          followup_date: {}
-        },
-        actions: {
-          cancel_action: {},
-          submit_action: {}
-        }
-      }
-    });
-    }
-
     const itemsdata = [];
 
     // ✅ Async function to fetch dialers and return list
@@ -189,6 +171,24 @@ app.get('/person-action-modal', async (req, res) => {
     // ⏳ Wait for dialer fetch to finish before responding
     await fetchDialers();
 
+    if (personIds.length === 0) {
+      return res.json({  // ✅ Add `return` here
+        data: {
+          blocks: {
+            action_selection: {
+              items: itemsdata
+            },
+            project_selection: {},
+            followup_date: {}
+          },
+          actions: {
+            cancel_action: {},
+            submit_action: {}
+          }
+        }
+      });
+    }
+
     // ✅ Now return the modal structure
     res.json({
       data: {
@@ -213,6 +213,7 @@ app.get('/person-action-modal', async (req, res) => {
     });
   }
 });
+
 //post request todo here
 // app.post('/person-action-modal', async (req, res) => {
 //   console.log("🟢 Received from modal:", req.body);

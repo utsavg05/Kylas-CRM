@@ -144,9 +144,21 @@ app.get('/person-action-modal', async (req, res) => {
     console.log('Selected Person IDs:', personIds);
 
     if (personIds.length === 0) {
-      return res.status(400).json({
-        error: { message: "No person selected" }
-      });
+         res.json({
+      data: {
+        blocks: {
+          action_selection: {
+            items: itemsdata
+          },
+          project_selection: {},
+          followup_date: {}
+        },
+        actions: {
+          cancel_action: {},
+          submit_action: {}
+        }
+      }
+    });
     }
 
     const itemsdata = [];
